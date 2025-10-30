@@ -17,8 +17,6 @@
       font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background:var(--bg);
       color:#111827;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
     }
     header{
       background:linear-gradient(90deg,var(--accent),#00c6ff);
@@ -27,39 +25,34 @@
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
     }
-    header h1{margin:0;font-size:18px;letter-spacing:1px}
-    .top-controls{display:flex;gap:8px;align-items:center}
-    .admin-btn{background:rgba(255,255,255,0.12);border:0;color:white;padding:8px 10px;border-radius:8px;cursor:pointer}
-    nav{display:flex;gap:6px;padding:10px;background:#fff;border-bottom:1px solid #eee;justify-content:center}
+    header h1{margin:0;font-size:18px;}
+    .admin-btn{background:rgba(255,255,255,0.15);border:0;color:white;padding:8px 10px;border-radius:8px;cursor:pointer}
+    nav{display:flex;gap:6px;padding:10px;background:#fff;border-bottom:1px solid #eee;justify-content:center;flex-wrap:wrap}
     nav button{background:none;border:0;padding:10px 14px;cursor:pointer;border-radius:8px;font-weight:600;color:var(--muted)}
-    nav button.active{background:linear-gradient(90deg,var(--accent),#00c6ff);color:white;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+    nav button.active{background:linear-gradient(90deg,var(--accent),#00c6ff);color:white}
     main{max-width:1100px;margin:18px auto;padding:0 12px}
     .upload-card{background:var(--card);padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center}
     input[type=file]{padding:6px}
-    select,input[type=text]{padding:8px;border-radius:8px;border:1px solid #e5e7eb}
+    select{padding:8px;border-radius:8px;border:1px solid #e5e7eb}
     .upload-btn{background:var(--accent);color:white;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
     .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:18px}
-    .card{background:var(--card);border-radius:12px;padding:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06);position:relative;overflow:hidden}
+    .card{background:var(--card);border-radius:12px;padding:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06);position:relative}
     .card img,.card video{width:100%;height:160px;object-fit:cover;border-radius:8px;display:block}
     .delete-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);color:white;border:0;padding:6px 8px;border-radius:8px;cursor:pointer;display:none}
-    .card .meta{margin-top:8px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
-    .albums-list{display:flex;flex-direction:column;gap:8px}
+    .meta{margin-top:6px;font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+    .albums-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
     .album-row{background:var(--card);padding:10px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,0.04)}
     .small{font-size:13px;color:var(--muted)}
     @media (max-width:640px){
       .card img,.card video{height:120px}
-      nav{overflow:auto}
     }
   </style>
 </head>
 <body>
   <header>
     <h1>📸 039 Photos</h1>
-    <div class="top-controls">
-      <button class="admin-btn" id="adminBtn" title="Admin login">🔐 Admin</button>
-    </div>
+    <button class="admin-btn" id="adminBtn">🔐 Admin</button>
   </header>
 
   <nav>
@@ -72,275 +65,167 @@
   <main>
     <section class="upload-card">
       <input id="fileInput" type="file" accept="image/*,video/*" multiple />
-      <select id="monthSelect" aria-label="Select month">
+      <select id="monthSelect">
         <option value="">Select month</option>
         <option>January</option><option>February</option><option>March</option>
         <option>April</option><option>May</option><option>June</option>
         <option>July</option><option>August</option><option>September</option>
         <option>October</option><option>November</option><option>December</option>
       </select>
-      <input id="occasionInput" type="text" placeholder="Occasion name (e.g. Birthday)" />
       <button class="upload-btn" id="uploadBtn">Upload</button>
     </section>
 
-    <div id="contentArea">
-      <!-- Gallery / Albums rendered here -->
-      <div id="gallery" class="gallery" aria-live="polite"></div>
-    </div>
+    <div id="gallery" class="gallery"></div>
   </main>
 
   <script type="module">
-    // ---------- PLACEHOLDERS: replace these with your own Supabase values ----------
-    const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";       // e.g. https://xyz.supabase.co
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM"; // your anon public key
-    // --------------------------------------------------------------------------------
+    // ⚠️ Replace these with your own Supabase values before uploading
+    const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
 
-    // Admin password (change if you want)
     const ADMIN_PASSWORD = "harsha@112";
-    // Bucket name
     const BUCKET = "photos";
 
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    // DOM
     const fileInput = document.getElementById('fileInput');
     const monthSelect = document.getElementById('monthSelect');
-    const occasionInput = document.getElementById('occasionInput');
     const uploadBtn = document.getElementById('uploadBtn');
     const gallery = document.getElementById('gallery');
     const adminBtn = document.getElementById('adminBtn');
 
-    let currentTab = 'all';
     let isAdmin = false;
+    let currentTab = "all";
 
-    // change tab UI
     window.changeTab = (tab) => {
       currentTab = tab;
-      document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-      document.getElementById('tab-' + tab).classList.add('active');
-      renderGalleryUI();
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+      document.getElementById("tab-" + tab).classList.add("active");
+      loadGallery();
     };
 
-    // Admin login
-    adminBtn.addEventListener('click', async () => {
+    adminBtn.addEventListener('click', () => {
       const pass = prompt("Enter admin password:");
       if (pass === ADMIN_PASSWORD) {
         isAdmin = true;
         alert("Admin access granted");
-        document.querySelectorAll('.delete-btn').forEach(b=>b.style.display = 'inline-block');
-      } else {
-        alert("Wrong password");
-      }
+        document.querySelectorAll('.delete-btn').forEach(b=>b.style.display='inline-block');
+      } else alert("Wrong password");
     });
 
-    // Upload handler: must select month and occasion
     uploadBtn.addEventListener('click', async () => {
       const files = fileInput.files;
       const month = monthSelect.value;
-      const occasion = occasionInput.value.trim();
-
-      if (!month) return alert("Please select a month.");
-      if (!occasion) return alert("Please enter an occasion name.");
-      if (!files.length) return alert("Please select files to upload.");
-
+      if (!month) return alert("Please select a month!");
+      if (!files.length) return alert("Please select files!");
       uploadBtn.disabled = true;
       uploadBtn.textContent = "Uploading...";
-
       for (const file of files) {
-        const safeName = `${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
-        const path = `${month}/${occasion}/${safeName}`;
-        const { error } = await supabase.storage.from(BUCKET).upload(path, file, { cacheControl: '3600', upsert: false });
-        if (error) console.error("Upload error:", error.message);
+        const safe = `${Date.now()}_${file.name.replace(/\s+/g,'_')}`;
+        const path = `${month}/${safe}`;
+        const { error } = await supabase.storage.from(BUCKET).upload(path, file);
+        if (error) console.error(error);
       }
-
       uploadBtn.disabled = false;
       uploadBtn.textContent = "Upload";
       fileInput.value = "";
-      occasionInput.value = "";
       monthSelect.value = "";
-      await loadAndRender(); // refresh
-      alert("Upload complete");
+      alert("Upload complete!");
+      loadGallery();
     });
 
-    // Load all objects from bucket
-    async function listAllObjects() {
-      // Supabase storage.list at '' returns objects (folders/files). To get everything we use list('', {limit: 1000})
+    async function listAll() {
       const { data, error } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
-      if (error) {
-        console.error("List error:", error);
-        return [];
-      }
-      // If Supabase returns only top-level folders, we still treat returned names as full paths saved earlier (we saved with month/occasion/filename)
-      // data is an array of objects with {name, id, updated_at ...}
-      return data || [];
+      if (error) return [];
+      return data;
     }
 
-    // Build nested structure { month: { occasion: [fileObj, ...] } }
-    async function buildAlbumMap() {
-      const all = await listAllObjects();
-      const map = {}; // month -> occasion -> array of file objects
-      for (const obj of all) {
-        // Supabase may return file.name as 'Month/Occ/filename' or a top-level folder; if obj.name contains '/', treat it directly
-        const name = obj.name;
-        if (!name) continue;
-        const parts = name.split('/');
-        if (parts.length >= 3) {
-          const month = parts[0];
-          const occasion = parts[1];
-          if (!map[month]) map[month] = {};
-          if (!map[month][occasion]) map[month][occasion] = [];
-          map[month][occasion].push(obj);
-        } else if (parts.length === 1) {
-          // Could be file at root; skip or treat as Unknown/Unknown
-          if (!map['Unknown']) map['Unknown'] = {};
-          if (!map['Unknown']['Misc']) map['Unknown']['Misc'] = [];
-          map['Unknown']['Misc'].push(obj);
-        } else if (parts.length === 2) {
-          const month = parts[0];
-          const occasion = parts[1] || 'Misc';
-          if (!map[month]) map[month] = {};
-          if (!map[month][occasion]) map[month][occasion] = [];
-          map[month][occasion].push(obj);
-        }
-      }
-      return map;
-    }
-
-    // get public url helper
-    function publicUrlFor(path) {
+    function publicUrl(path) {
       const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-      return data && data.publicUrl ? data.publicUrl : null;
+      return data.publicUrl;
     }
 
-    // Delete file
     async function deleteFile(path) {
-      if (!isAdmin) { alert("Admin only"); return; }
+      if (!isAdmin) return alert("Admin only");
       if (!confirm("Delete this file?")) return;
       const { error } = await supabase.storage.from(BUCKET).remove([path]);
-      if (error) { console.error(error); alert("Delete failed"); }
-      else { await loadAndRender(); }
+      if (error) console.error(error);
+      else loadGallery();
     }
     window.deleteFile = deleteFile;
 
-    // Render gallery or albums depending on currentTab
-    async function renderGalleryUI() {
-      gallery.innerHTML = '';
-      const map = await buildAlbumMap();
-      if (currentTab === 'albums') {
-        // albums view: show Month -> list of occasions with counts
-        const months = Object.keys(map).sort((a,b)=> a.localeCompare(b));
-        for (const month of months) {
-          const monthHeader = document.createElement('div');
-          monthHeader.className = 'album-header';
-          monthHeader.textContent = month;
-          gallery.appendChild(monthHeader);
+    async function loadGallery() {
+      gallery.innerHTML = "Loading...";
+      const { data, error } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
+      if (error || !data.length) {
+        gallery.innerHTML = "<p>No files found</p>";
+        return;
+      }
+      gallery.innerHTML = "";
+      const items = [];
+      for (const obj of data) {
+        const path = obj.name;
+        const ext = path.split('.').pop().toLowerCase();
+        const isVideo = ['mp4','webm','mov','ogg'].includes(ext);
+        items.push({ path, isVideo });
+      }
 
+      let filtered = items;
+      if (currentTab === "photos") filtered = items.filter(i=>!i.isVideo);
+      if (currentTab === "videos") filtered = items.filter(i=>i.isVideo);
+
+      const monthMap = {};
+      for (const it of filtered) {
+        const month = it.path.split('/')[0] || "Unknown";
+        if (!monthMap[month]) monthMap[month] = [];
+        monthMap[month].push(it);
+      }
+
+      if (currentTab === "albums") {
+        for (const month of Object.keys(monthMap)) {
           const list = document.createElement('div');
-          list.className = 'albums-list';
-          for (const occasion of Object.keys(map[month] || {})) {
-            const items = map[month][occasion];
-            const row = document.createElement('div');
-            row.className = 'album-row';
-            row.innerHTML = `<div><strong>${occasion}</strong><div class="small">${items.length} items</div></div>
-                             <div><button onclick="openAlbum('${encodeURIComponent(month)}','${encodeURIComponent(occasion)}')">Open</button></div>`;
-            list.appendChild(row);
-          }
+          list.className = "album-row";
+          list.innerHTML = `<div><strong>${month}</strong></div>
+            <div><button onclick="openAlbum('${month}')">Open</button></div>`;
           gallery.appendChild(list);
         }
         return;
       }
 
-      // For all/photos/videos - render all matching media items
-      const items = []; // {path, name, isVideo, month, occasion, obj}
-      for (const month of Object.keys(map)) {
-        for (const occasion of Object.keys(map[month])) {
-          for (const obj of map[month][occasion]) {
-            const path = obj.name;
-            const ext = obj.name.split('.').pop().toLowerCase();
-            const isVideo = ['mp4','webm','mov','ogg'].includes(ext);
-            items.push({ path, name: obj.name.split('/').pop(), isVideo, month, occasion, obj });
-          }
-        }
-      }
-
-      // filter by tab
-      let filtered = items;
-      if (currentTab === 'photos') filtered = items.filter(i=>!i.isVideo);
-      if (currentTab === 'videos') filtered = items.filter(i=>i.isVideo);
-
-      // newest first by obj.updated_at if present
-      filtered.sort((a,b)=>{
-        const ta = new Date(a.obj.updated_at || a.obj.created_at || 0).getTime();
-        const tb = new Date(b.obj.updated_at || b.obj.created_at || 0).getTime();
-        return tb - ta;
-      });
-
-      if (filtered.length === 0) {
-        const p = document.createElement('p'); p.className='small'; p.textContent = 'No media to show';
-        gallery.appendChild(p);
-        return;
-      }
-
       for (const it of filtered) {
-        const pUrl = publicUrlFor(it.path);
-        const card = document.createElement('div'); card.className='card';
-        let media;
-        if (it.isVideo) {
-          media = document.createElement('video'); media.src = pUrl; media.controls = true; media.playsInline = true;
-        } else {
-          media = document.createElement('img'); media.src = pUrl; media.loading = 'lazy';
-        }
-        const meta = document.createElement('div'); meta.className = 'meta';
-        meta.innerHTML = `<div class="small">${it.month} • ${it.occasion}</div><div class="small">${it.name}</div>`;
-        const del = document.createElement('button'); del.className = 'delete-btn'; del.textContent = 'Delete';
-        del.onclick = ()=>deleteFile(it.path);
-        if (isAdmin) del.style.display = 'inline-block';
-        card.appendChild(media); card.appendChild(del); card.appendChild(meta);
+        const url = publicUrl(it.path);
+        const card = document.createElement("div");
+        card.className = "card";
+        const media = it.isVideo 
+          ? `<video src="${url}" controls></video>` 
+          : `<img src="${url}" alt="">`;
+        const delBtn = `<button class="delete-btn" style="${isAdmin?'display:inline-block':'display:none'}" onclick="deleteFile('${it.path}')">Delete</button>`;
+        card.innerHTML = media + delBtn + `<div class="meta"><div>${it.path.split('/')[0]}</div></div>`;
         gallery.appendChild(card);
       }
     }
 
-    // open album month/occasion (shows only that album)
-    window.openAlbum = async (monthEnc, occasionEnc) => {
-      const month = decodeURIComponent(monthEnc);
-      const occasion = decodeURIComponent(occasionEnc);
-      gallery.innerHTML = '';
-      const arr = (await buildAlbumMap())[month]?.[occasion] || [];
-      if (!arr.length) { gallery.innerHTML = '<p class="small">No items</p>'; return; }
-      for (const obj of arr.sort((a,b)=> new Date(b.updated_at||b.created_at) - new Date(a.updated_at||a.created_at))) {
-        const path = obj.name;
+    window.openAlbum = async (month) => {
+      gallery.innerHTML = `<button onclick="changeTab('albums')">← Back</button>`;
+      const { data } = await supabase.storage.from(BUCKET).list(month, { limit: 1000 });
+      if (!data.length) return gallery.innerHTML += "<p>No files</p>";
+      for (const obj of data) {
+        const path = `${month}/${obj.name}`;
+        const url = publicUrl(path);
         const ext = path.split('.').pop().toLowerCase();
         const isVideo = ['mp4','webm','mov','ogg'].includes(ext);
-        const pUrl = publicUrlFor(path);
-        const card = document.createElement('div'); card.className='card';
-        let media;
-        if (isVideo) { media = document.createElement('video'); media.src = pUrl; media.controls = true; }
-        else { media = document.createElement('img'); media.src = pUrl; media.loading = 'lazy'; }
-        const del = document.createElement('button'); del.className='delete-btn'; del.textContent='Delete';
-        del.onclick = ()=>deleteFile(path);
-        if (isAdmin) del.style.display = 'inline-block';
-        const meta = document.createElement('div'); meta.className='meta';
-        meta.innerHTML = `<div class="small">${month} • ${occasion}</div><div class="small">${path.split('/').pop()}</div>`;
-        card.appendChild(media); card.appendChild(del); card.appendChild(meta);
+        const card = document.createElement('div');
+        card.className = "card";
+        const media = isVideo ? `<video src="${url}" controls></video>` : `<img src="${url}">`;
+        const delBtn = `<button class="delete-btn" style="${isAdmin?'display:inline-block':'display:none'}" onclick="deleteFile('${path}')">Delete</button>`;
+        card.innerHTML = media + delBtn + `<div class="meta"><div>${month}</div></div>`;
         gallery.appendChild(card);
       }
-      // add a back button
-      const back = document.createElement('div'); back.style.margin='16px';
-      back.innerHTML = `<button onclick="changeTab('all')">← Back</button>`;
-      gallery.prepend(back);
     };
 
-    // load and render full UI
-    async function loadAndRender(){
-      try { await renderGalleryUI(); } catch(e){ console.error(e); gallery.innerHTML = '<p class="small">Error loading gallery</p>'; }
-    }
-
-    // initial load
-    loadAndRender();
-
-    // refresh every 60s (optional)
-    setInterval(loadAndRender, 60000);
+    loadGallery();
+    setInterval(loadGallery, 60000);
   </script>
 </body>
 </html>
