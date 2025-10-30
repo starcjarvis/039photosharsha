@@ -1,83 +1,26 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>039 Photos</title>
 <style>
-  body {
-    font-family: system-ui, sans-serif;
-    margin: 0; padding: 0;
-    background: #fafafa;
-    color: #222;
-  }
-  header {
-    background: #222;
-    color: #fff;
-    text-align: center;
-    padding: 1rem;
-  }
-  #tabs {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    background: #eee;
-    padding: 0.5rem;
-  }
-  #tabs button {
-    border: none;
-    background: #ddd;
-    padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
-  }
-  #tabs button.active {
-    background: #222;
-    color: #fff;
-  }
-  form {
-    text-align: center;
-    margin: 1rem;
-  }
-  input, select {
-    margin: 0.3rem;
-    padding: 0.4rem;
-  }
-  .month-section {
-    margin: 1rem;
-  }
-  .month-section h2 {
-    margin-bottom: 0.5rem;
-  }
-  .media-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  .gallery-img, .gallery-video {
-    width: 150px; height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  .delete-btn {
-    display: none;
-    background: crimson;
-    color: white;
-    border: none;
-    padding: 0.3rem 0.5rem;
-    border-radius: 4px;
-    margin-top: 0.2rem;
-  }
-  #admin-btn {
-    position: fixed;
-    bottom: 1rem; right: 1rem;
-    padding: 0.6rem 1rem;
-    background: #333; color: #fff;
-    border: none; border-radius: 1rem;
-  }
+  body{font-family:sans-serif;margin:0;background:#fafafa;color:#222}
+  header{background:#222;color:#fff;text-align:center;padding:1rem}
+  #tabs{display:flex;justify-content:center;gap:1rem;background:#eee;padding:.5rem}
+  #tabs button{border:none;background:#ddd;padding:.5rem 1rem;border-radius:.5rem}
+  #tabs button.active{background:#222;color:#fff}
+  form{text-align:center;margin:1rem}
+  input{margin:.3rem;padding:.4rem}
+  .media-container{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center}
+  .gallery-img,.gallery-video{width:150px;height:150px;object-fit:cover;border-radius:8px}
+  .delete-btn{display:none;background:crimson;color:#fff;border:none;padding:.3rem .5rem;border-radius:4px;margin-top:.2rem}
+  #admin-btn{position:fixed;bottom:1rem;right:1rem;padding:.6rem 1rem;background:#333;color:#fff;border:none;border-radius:1rem}
 </style>
 </head>
 <body>
 <header><h1>039 Photos</h1></header>
+
 <div id="tabs">
   <button id="allTab" class="active" onclick="filterTab('all')">All Media</button>
   <button onclick="filterTab('photos')">Photos</button>
@@ -85,24 +28,16 @@
 </div>
 
 <form id="uploadForm">
-  <label for="month">Month:</label>
-  <select id="month" required>
-    <option value="">Select month</option>
-    <option>January</option><option>February</option><option>March</option>
-    <option>April</option><option>May</option><option>June</option>
-    <option>July</option><option>August</option><option>September</option>
-    <option>October</option><option>November</option><option>December</option>
-  </select>
-  <input type="file" id="fileInput" multiple accept="image/*,video/*" required />
+  <input type="file" id="fileInput" multiple accept="image/*,video/*" required>
   <button type="submit">Upload</button>
 </form>
 
-<div id="gallery"></div>
+<div id="gallery" class="media-container"></div>
 <button id="admin-btn" onclick="adminLogin()">🔐 Admin</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // 👇 Replace these two lines with your real Supabase credentials
+  // 👇 Replace these two lines with your actual Supabase details
   const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -110,132 +45,90 @@
 
   const ADMIN_PASSWORD = "harsha@112";
   let isAdmin = false;
-  let currentTab = "all";
 
-  function adminLogin() {
+  function adminLogin(){
     const entered = prompt("Enter admin password:");
-    if (entered === ADMIN_PASSWORD) {
-      isAdmin = true;
+    if(entered===ADMIN_PASSWORD){
+      isAdmin=true;
       alert("Admin access granted");
       showDeleteButtons();
-    } else {
-      alert("Wrong password");
-    }
+    }else alert("Wrong password");
   }
 
-  function showDeleteButtons() {
-    document.querySelectorAll(".delete-btn").forEach(btn => btn.style.display = "inline-block");
+  function showDeleteButtons(){
+    document.querySelectorAll(".delete-btn").forEach(btn=>btn.style.display="inline-block");
   }
 
-  async function uploadFiles(e) {
+  document.getElementById("uploadForm").addEventListener("submit",uploadFiles);
+
+  async function uploadFiles(e){
     e.preventDefault();
-    const month = document.getElementById("month").value;
-    const files = document.getElementById("fileInput").files;
-    if (!month) return alert("Please select a month first.");
-    if (files.length === 0) return alert("Please choose files to upload.");
-
-    for (let file of files) {
-      const path = `${month}/${file.name}`;
-      const { error } = await supabase.storage.from(bucketName).upload(path, file, { upsert: true });
-      if (error) {
-        console.error(error);
-        alert("Upload failed for " + file.name);
-      }
+    const files=document.getElementById("fileInput").files;
+    if(files.length===0)return alert("Choose files first!");
+    for(const file of files){
+      const {error}=await supabase.storage.from(bucketName).upload(file.name,file,{upsert:true});
+      if(error){console.error(error);alert("Failed: "+file.name);}
     }
     alert("Upload complete!");
     loadGallery();
   }
-  document.getElementById("uploadForm").addEventListener("submit", uploadFiles);
 
-  async function loadGallery() {
-    const gallery = document.getElementById("gallery");
-    gallery.innerHTML = "<p>Loading...</p>";
-
-    try {
-      const { data: months, error } = await supabase.storage.from(bucketName).list("", { limit: 100 });
-      if (error) throw error;
-
-      gallery.innerHTML = "";
-      for (const month of months) {
-        if (!month.name || month.id !== undefined) continue;
-        const { data: files } = await supabase.storage.from(bucketName).list(month.name + "/", { limit: 100 });
-        if (!files || files.length === 0) continue;
-
-        const section = document.createElement("div");
-        section.className = "month-section";
-        section.innerHTML = `<h2>${month.name}</h2>`;
-        const mediaDiv = document.createElement("div");
-        mediaDiv.className = "media-container";
-
-        for (const file of files) {
-          const filePath = `${month.name}/${file.name}`;
-          const { data: publicURL } = supabase.storage.from(bucketName).getPublicUrl(filePath);
-          const ext = file.name.split(".").pop().toLowerCase();
-
-          if (["jpg", "jpeg", "png", "gif", "webp"].includes(ext)) {
-            const wrapper = document.createElement("div");
-            const img = document.createElement("img");
-            img.src = publicURL.publicUrl;
-            img.className = "gallery-img media-photo";
-            wrapper.appendChild(img);
-            if (isAdmin) {
-              const del = document.createElement("button");
-              del.textContent = "Delete";
-              del.className = "delete-btn";
-              del.onclick = () => deleteMedia(filePath, wrapper);
-              wrapper.appendChild(del);
-            }
-            mediaDiv.appendChild(wrapper);
-          } else if (["mp4","mov","webm","avi"].includes(ext)) {
-            const wrapper = document.createElement("div");
-            const vid = document.createElement("video");
-            vid.src = publicURL.publicUrl;
-            vid.controls = true;
-            vid.className = "gallery-video media-video";
-            wrapper.appendChild(vid);
-            if (isAdmin) {
-              const del = document.createElement("button");
-              del.textContent = "Delete";
-              del.className = "delete-btn";
-              del.onclick = () => deleteMedia(filePath, wrapper);
-              wrapper.appendChild(del);
-            }
-            mediaDiv.appendChild(wrapper);
-          }
+  async function loadGallery(){
+    const gallery=document.getElementById("gallery");
+    gallery.innerHTML="<p>Loading...</p>";
+    try{
+      const {data, error}=await supabase.storage.from(bucketName).list("",{limit:1000,sortBy:{column:"name",order:"asc"}});
+      if(error)throw error;
+      gallery.innerHTML="";
+      for(const file of data){
+        if(!file.name)continue;
+        const {data:pub}=supabase.storage.from(bucketName).getPublicUrl(file.name);
+        const ext=file.name.split(".").pop().toLowerCase();
+        const wrap=document.createElement("div");
+        if(["jpg","jpeg","png","gif","webp"].includes(ext)){
+          const img=document.createElement("img");
+          img.src=pub.publicUrl;
+          img.className="gallery-img media-photo";
+          wrap.appendChild(img);
+        }else if(["mp4","mov","webm","avi"].includes(ext)){
+          const vid=document.createElement("video");
+          vid.src=pub.publicUrl;
+          vid.controls=true;
+          vid.className="gallery-video media-video";
+          wrap.appendChild(vid);
         }
-        section.appendChild(mediaDiv);
-        gallery.appendChild(section);
+        if(isAdmin){
+          const del=document.createElement("button");
+          del.textContent="Delete";
+          del.className="delete-btn";
+          del.onclick=()=>deleteMedia(file.name,wrap);
+          wrap.appendChild(del);
+        }
+        gallery.appendChild(wrap);
       }
-
-      if (!gallery.innerHTML.trim()) gallery.innerHTML = "<p>No media yet.</p>";
-
-    } catch (err) {
+      if(!gallery.innerHTML.trim())gallery.innerHTML="<p>No media yet.</p>";
+    }catch(err){
       console.error(err);
-      gallery.innerHTML = "<p>Error loading gallery.</p>";
+      gallery.innerHTML="<p>Error loading gallery.</p>";
     }
   }
 
-  async function deleteMedia(path, element) {
-    if (!confirm("Delete this item?")) return;
-    const { error } = await supabase.storage.from(bucketName).remove([path]);
-    if (error) {
-      alert("Delete failed.");
-    } else {
-      element.remove();
-    }
+  async function deleteMedia(path,element){
+    if(!confirm("Delete this item?"))return;
+    const {error}=await supabase.storage.from(bucketName).remove([path]);
+    if(error){alert("Delete failed.");}else{element.remove();}
   }
 
-  function filterTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll("#tabs button").forEach(b => b.classList.remove("active"));
-    if (tab === "all") document.getElementById("allTab").classList.add("active");
-    const photos = document.querySelectorAll(".media-photo");
-    const videos = document.querySelectorAll(".media-video");
-    photos.forEach(p => p.parentElement.style.display = (tab === "all" || tab === "photos") ? "" : "none");
-    videos.forEach(v => v.parentElement.style.display = (tab === "all" || tab === "videos") ? "" : "none");
+  function filterTab(tab){
+    document.querySelectorAll("#tabs button").forEach(b=>b.classList.remove("active"));
+    if(tab==="all")document.getElementById("allTab").classList.add("active");
+    const photos=document.querySelectorAll(".media-photo");
+    const videos=document.querySelectorAll(".media-video");
+    photos.forEach(p=>p.parentElement.style.display=(tab==="all"||tab==="photos")?"":"none");
+    videos.forEach(v=>v.parentElement.style.display=(tab==="all"||tab==="videos")?"":"none");
   }
 
-  window.onload = loadGallery;
+  window.onload=loadGallery;
 </script>
 </body>
 </html>
