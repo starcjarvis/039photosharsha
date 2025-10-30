@@ -8,34 +8,27 @@
 </head>
 <body>
   <header>
-    <h1>📷 039 Gallery</h1>
+    <div class="nav">
+      <button id="menu-btn">☰</button>
+      <h1>GALLERY</h1>
+      <button id="search-btn">🔍</button>
+    </div>
+    <div class="tabs">
+      <button class="tab active">Albums</button>
+      <button class="tab">Photos</button>
+      <button class="tab">Videos</button>
+    </div>
   </header>
 
-  <div id="albums">
-    <div class="album">
-      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="People">
-      <p>People</p>
+  <main>
+    <div class="upload-box">
+      <input type="file" id="upload" multiple accept="image/*" />
     </div>
-    <div class="album">
-      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png" alt="Selfie">
-      <p>Selfie</p>
-    </div>
-    <div class="album">
-      <img src="https://cdn-icons-png.flaticon.com/512/415/415682.png" alt="Nature">
-      <p>Nature</p>
-    </div>
-    <div class="album">
-      <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png" alt="Food">
-      <p>Food</p>
-    </div>
-  </div>
 
-  <div id="upload-box">
-    <input type="file" id="upload" multiple accept="image/*" />
-  </div>
-
-  <h2 id="month-title">October</h2>
-  <div id="gallery"></div>
+    <div id="photo-sections">
+      <!-- Photos grouped by date will appear here -->
+    </div>
+  </main>
 
   <footer>
     <p>Made with ❤️ by Admin</p>
