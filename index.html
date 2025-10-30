@@ -29,6 +29,7 @@
       justify-content: center;
       gap: 10px;
       padding: 10px;
+      flex-wrap: wrap;
     }
 
     nav button {
@@ -116,20 +117,20 @@
     const bucketName = "photos";
     const adminPassword = "harsha@112";
 
+    // Upload files faster with unique names (parallel)
     async function uploadFiles() {
-      const files = document.getElementById("fileInput").files;
+      const files = [...document.getElementById("fileInput").files];
       if (!files.length) return alert("Please select files to upload!");
       document.getElementById("status").innerText = "Uploading...";
 
-      for (const file of files) {
-        const { error } = await supabase.storage.from(bucketName).upload(file.name, file, { upsert: true });
-        if (error) {
-          console.error(error);
-          document.getElementById("status").innerText = "Upload failed: " + error.message;
-          return;
-        }
-      }
+      const uploads = files.map(async (file) => {
+        const uniqueName = Date.now() + "_" + file.name.replace(/\s+/g, "_");
+        document.getElementById("status").innerText = "Uploading " + file.name + "...";
+        const { error } = await supabase.storage.from(bucketName).upload(uniqueName, file);
+        if (error) console.error("Upload failed:", error.message);
+      });
 
+      await Promise.all(uploads);
       document.getElementById("status").innerText = "Upload complete!";
       loadMedia();
     }
@@ -138,10 +139,13 @@
       const container = document.getElementById("mediaContainer");
       container.innerHTML = "";
 
-      const { data, error } = await supabase.storage.from(bucketName).list("", { limit: 100 });
-      if (error) return console.error(error);
+      const { data, error } = await supabase.storage.from(bucketName).list("", { limit: 500 });
+      if (error) {
+        console.error(error);
+        return;
+      }
 
-      data.forEach(async (file) => {
+      for (const file of data.reverse()) { // show newest first
         const { data: pub } = supabase.storage.from(bucketName).getPublicUrl(file.name);
         const url = pub.publicUrl;
         const wrapper = document.createElement("div");
@@ -159,7 +163,6 @@
           wrapper.appendChild(img);
         }
 
-        // Add delete button
         const delBtn = document.createElement("button");
         delBtn.className = "deleteBtn";
         delBtn.innerText = "Delete";
@@ -176,7 +179,7 @@
 
         wrapper.appendChild(delBtn);
         container.appendChild(wrapper);
-      });
+      }
     }
 
     function filterMedia(type) {
