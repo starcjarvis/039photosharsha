@@ -3,21 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>039 Photos Gallery</title>
+  <title>039 Gallery</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>📸 039 Photos</h1>
-    <p>Upload and view photos instantly</p>
+    <h1>📷 039 Gallery</h1>
   </header>
 
-  <section id="upload-section">
-    <input type="file" id="upload" multiple accept="image/*" />
-    <button id="clear-gallery">🗑️ Clear All</button>
-  </section>
+  <div id="albums">
+    <div class="album">
+      <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="People">
+      <p>People</p>
+    </div>
+    <div class="album">
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077012.png" alt="Selfie">
+      <p>Selfie</p>
+    </div>
+    <div class="album">
+      <img src="https://cdn-icons-png.flaticon.com/512/415/415682.png" alt="Nature">
+      <p>Nature</p>
+    </div>
+    <div class="album">
+      <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png" alt="Food">
+      <p>Food</p>
+    </div>
+  </div>
 
-  <section id="gallery"></section>
+  <div id="upload-box">
+    <input type="file" id="upload" multiple accept="image/*" />
+  </div>
+
+  <h2 id="month-title">October</h2>
+  <div id="gallery"></div>
 
   <footer>
     <p>Made with ❤️ by Admin</p>
