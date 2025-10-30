@@ -1,204 +1,251 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>039 Photos</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <style>
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-    }
-
-    header {
-      background: #0078d7;
-      color: white;
-      padding: 12px;
-      font-size: 1.5em;
-      font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    nav {
-      background: #e0e0e0;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      padding: 10px;
-      flex-wrap: wrap;
-    }
-
-    nav button {
-      background: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    nav button:hover {
-      background: #0078d7;
-      color: white;
-    }
-
-    #uploadSection {
-      background: white;
-      margin: 15px auto;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      width: 90%;
-      max-width: 500px;
-    }
-
-    input[type="file"] {
-      display: block;
-      margin: 10px auto;
-    }
-
-    #status {
-      margin-top: 8px;
-      color: #444;
-      font-size: 0.9em;
-    }
-
-    #mediaContainer {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 10px;
-      padding: 15px;
-    }
-
-    img, video {
-      width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    .deleteBtn {
-      background: rgba(255,0,0,0.8);
-      border: none;
-      color: white;
-      padding: 5px 8px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.8em;
-      margin-top: 5px;
-    }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>P39 Photos — Upload with progress & delete</title>
+<script src="https://unpkg.com/@supabase/supabase-js"></script>
+<style>
+  :root{--accent:#0078ff;--bg:#f4f6fb}
+  body{font-family:system-ui,Segoe UI,Arial;background:var(--bg);margin:0;color:#111}
+  header{background:linear-gradient(90deg,var(--accent),#00c6ff);color:#fff;padding:14px;text-align:center;font-weight:700}
+  .tabs{display:flex;gap:8px;justify-content:center;padding:12px;background:#fff;border-bottom:1px solid #eee}
+  .tab{padding:8px 14px;border-radius:8px;background:#f2f4f8;cursor:pointer;font-weight:600}
+  .tab.active{background:var(--accent);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
+  .panel{max-width:980px;margin:18px auto;padding:12px}
+  .upload-card{background:#fff;padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06);display:flex;flex-direction:column;gap:10px;align-items:center}
+  input[type=file]{width:100%}
+  button.primary{background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
+  #progressList{width:100%;max-width:640px;margin-top:10px}
+  .progress-row{background:#fff;padding:8px;border-radius:8px;margin:8px 0;box-shadow:0 3px 8px rgba(0,0,0,0.04)}
+  .progress-title{font-size:13px;margin-bottom:6px}
+  .progress-bar{height:10px;background:#eee;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;background:#10b981;width:0%}
+  .progress-meta{font-size:12px;color:#666;margin-top:6px;display:flex;justify-content:space-between}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:18px}
+  .card{background:#fff;border-radius:10px;padding:8px;box-shadow:0 6px 18px rgba(0,0,0,0.06);position:relative;display:flex;flex-direction:column;gap:8px}
+  .card img,.card video{width:100%;height:150px;object-fit:cover;border-radius:8px}
+  .meta{font-size:12px;color:#555;display:flex;justify-content:space-between;align-items:center}
+  .delete-btn{background:#ef4444;color:#fff;border:0;padding:6px 8px;border-radius:8px;cursor:pointer}
+  @media(max-width:600px){ .card img,.card video{height:120px} }
+</style>
 </head>
 <body>
-  <header>📸 039 Photos</header>
+  <header>P39 Photos</header>
 
-  <nav>
-    <button onclick="filterMedia('all')">All Media</button>
-    <button onclick="filterMedia('photos')">Photos</button>
-    <button onclick="filterMedia('videos')">Videos</button>
-  </nav>
-
-  <div id="uploadSection">
-    <input type="file" id="fileInput" accept="image/*,video/*" multiple />
-    <button onclick="uploadFiles()">Upload</button>
-    <div id="status"></div>
+  <div class="tabs" role="tablist">
+    <div class="tab active" data-tab="all" onclick="setTab('all')">All Media</div>
+    <div class="tab" data-tab="photos" onclick="setTab('photos')">Photos</div>
+    <div class="tab" data-tab="videos" onclick="setTab('videos')">Videos</div>
   </div>
 
-  <div id="mediaContainer"></div>
+  <main class="panel">
+    <div class="upload-card">
+      <input id="fileInput" type="file" accept="image/*,video/*" multiple />
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;">
+        <button class="primary" onclick="startUpload()">Upload</button>
+        <div id="status" style="align-self:center;color:#444"></div>
+      </div>
 
-  <script>
-    const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    const bucketName = "photos";
-    const adminPassword = "harsha@112";
+      <div id="progressList"></div>
+    </div>
 
-    // Upload files faster with unique names (parallel)
-    async function uploadFiles() {
-      const files = [...document.getElementById("fileInput").files];
-      if (!files.length) return alert("Please select files to upload!");
-      document.getElementById("status").innerText = "Uploading...";
+    <div id="gallery" class="grid"></div>
+  </main>
 
-      const uploads = files.map(async (file) => {
-        const uniqueName = Date.now() + "_" + file.name.replace(/\s+/g, "_");
-        document.getElementById("status").innerText = "Uploading " + file.name + "...";
-        const { error } = await supabase.storage.from(bucketName).upload(uniqueName, file);
-        if (error) console.error("Upload failed:", error.message);
-      });
+<script>
+/* ------------------ CONFIG (your project) ------------------ */
+const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
+const BUCKET = "photos";
+const ADMIN_PASSWORD = "harsha@112";           // delete password
+/* ---------------------------------------------------------- */
 
-      await Promise.all(uploads);
-      document.getElementById("status").innerText = "Upload complete!";
-      loadMedia();
-    }
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentTab = 'all';
 
-    async function loadMedia() {
-      const container = document.getElementById("mediaContainer");
-      container.innerHTML = "";
+function setTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
+  renderGallery();
+}
 
-      const { data, error } = await supabase.storage.from(bucketName).list("", { limit: 500 });
-      if (error) {
-        console.error(error);
-        return;
+/* ----- Upload using XHR to Supabase Storage REST so we have real progress events ----- */
+/* Endpoint: PUT https://<project>.supabase.co/storage/v1/object/<bucket>/<path> */
+function uploadXHR(file, targetPath, onProgress){
+  return new Promise((resolve,reject)=>{
+    const url = `${SUPABASE_URL}/storage/v1/object/${encodeURIComponent(BUCKET)}/${encodeURIComponent(targetPath)}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', url, true);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_KEY);
+    // API key header (some setups need apikey too)
+    xhr.setRequestHeader('apikey', SUPABASE_KEY);
+    // Content-Type
+    if (file.type) xhr.setRequestHeader('Content-Type', file.type);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && typeof onProgress === 'function'){
+        onProgress(e.loaded, e.total);
       }
-
-      for (const file of data.reverse()) { // show newest first
-        const { data: pub } = supabase.storage.from(bucketName).getPublicUrl(file.name);
-        const url = pub.publicUrl;
-        const wrapper = document.createElement("div");
-
-        if (file.name.match(/\.(mp4|mov|avi|mkv)$/i)) {
-          const vid = document.createElement("video");
-          vid.src = url;
-          vid.controls = true;
-          wrapper.classList.add("video-item");
-          wrapper.appendChild(vid);
-        } else if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-          const img = document.createElement("img");
-          img.src = url;
-          wrapper.classList.add("photo-item");
-          wrapper.appendChild(img);
+    };
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status >=200 && xhr.status <300) {
+          resolve({ ok:true, response: xhr.responseText });
+        } else {
+          reject(new Error(`Upload failed ${xhr.status}: ${xhr.responseText}`));
         }
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error during upload"));
+    xhr.send(file);
+  });
+}
 
-        const delBtn = document.createElement("button");
-        delBtn.className = "deleteBtn";
-        delBtn.innerText = "Delete";
-        delBtn.onclick = async () => {
-          const pass = prompt("Enter admin password to delete:");
-          if (pass === adminPassword) {
-            const { error: delErr } = await supabase.storage.from(bucketName).remove([file.name]);
-            if (delErr) alert("Error deleting file: " + delErr.message);
-            else loadMedia();
-          } else if (pass !== null) {
-            alert("Incorrect password!");
+/* ----- Start parallel uploads and show live progress ----- */
+async function startUpload(){
+  const input = document.getElementById('fileInput');
+  const files = Array.from(input.files || []);
+  if (!files.length) return alert('Select files first');
+
+  document.getElementById('status').innerText = `Uploading ${files.length} file(s)...`;
+  const progressList = document.getElementById('progressList');
+  progressList.innerHTML = '';
+
+  // prepare UI rows
+  const rows = files.map((f, i) => {
+    const row = document.createElement('div');
+    row.className = 'progress-row';
+    row.innerHTML = `
+      <div class="progress-title">${f.name} — ${(f.size/(1024*1024)).toFixed(2)} MB</div>
+      <div class="progress-bar"><div class="progress-fill" id="pf-${i}"></div></div>
+      <div class="progress-meta"><span id="pcur-${i}">0 MB</span><span id="ppct-${i}">0%</span></div>
+    `;
+    progressList.appendChild(row);
+    return row;
+  });
+
+  // upload all in parallel
+  const promises = files.map((file, i) => (async ()=>{
+    const uniqueName = `${Date.now()}_${Math.random().toString(36).slice(2,8)}_${file.name.replace(/\s+/g,'_')}`;
+    // path at bucket root
+    const path = uniqueName;
+    try{
+      await uploadXHR(file, path, (loaded, total)=>{
+        const pct = Math.round((loaded/total)*100);
+        const mb = (loaded/(1024*1024)).toFixed(2) + ' MB';
+        document.getElementById(`pf-${i}`).style.width = pct + '%';
+        document.getElementById(`pcur-${i}`).innerText = `${(loaded/(1024*1024)).toFixed(2)} MB / ${(total/(1024*1024)).toFixed(2)} MB`;
+        document.getElementById(`ppct-${i}`).innerText = pct + '%';
+      });
+      return { ok:true, path };
+    }catch(err){
+      console.error('Upload error', err);
+      return { ok:false, err: err.message, path };
+    }
+  })());
+
+  const results = await Promise.all(promises);
+  const failed = results.filter(r=>!r.ok);
+  if (failed.length) {
+    alert(`${failed.length} file(s) failed to upload. See console.`);
+  } else {
+    document.getElementById('status').innerText = 'All uploads finished';
+  }
+  // clear file input
+  input.value = '';
+  // reload gallery
+  await renderGallery();
+}
+
+/* ----- Listing and rendering media from bucket ----- */
+async function listAllObjects(){
+  // We call list('', {limit:1000}) to get all top-level objects stored at root
+  const { data, error } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
+  if (error) { console.error('List error', error); return []; }
+  return data || [];
+}
+
+function publicUrl(path){
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data && data.publicUrl ? data.publicUrl : null;
+}
+
+async function renderGallery(){
+  const container = document.getElementById('gallery');
+  container.innerHTML = '';
+  const objs = await listAllObjects();
+  if (!objs.length) {
+    container.innerHTML = '<p style="grid-column:1/-1;color:#666">No media yet</p>';
+    return;
+  }
+
+  // Filter by type if needed
+  const filtered = objs.filter(o=>{
+    if (currentTab === 'all') return true;
+    const isVideo = /\.(mp4|mov|avi|webm|mkv)$/i.test(o.name);
+    return currentTab === 'videos' ? isVideo : !isVideo;
+  });
+
+  // Show newest first if updated_at exists (Supabase returns updated_at)
+  filtered.sort((a,b)=>{
+    const ta = new Date(a.updated_at || a.created_at || 0).getTime();
+    const tb = new Date(b.updated_at || b.created_at || 0).getTime();
+    return tb - ta;
+  });
+
+  for (const obj of filtered){
+    try{
+      const urlData = publicUrl(obj.name);
+      if (!urlData) continue;
+      const url = urlData;
+      const card = document.createElement('div');
+      card.className = 'card';
+      // media element
+      if (/\.(mp4|mov|avi|webm|mkv)$/i.test(obj.name)){
+        const vid = document.createElement('video');
+        vid.src = url;
+        vid.controls = true;
+        card.appendChild(vid);
+      } else {
+        const img = document.createElement('img');
+        img.src = url;
+        card.appendChild(img);
+      }
+      // meta + delete
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = `<div style="font-size:12px;color:#666">${obj.name}</div>`;
+      const delBtn = document.createElement('button');
+      delBtn.className = 'delete-btn delete-btn-visible';
+      delBtn.textContent = 'Delete';
+      delBtn.onclick = async ()=>{
+        const pass = prompt('Enter admin password:');
+        if (pass === ADMIN_PASSWORD){
+          const { error } = await supabase.storage.from(BUCKET).remove([obj.name]);
+          if (error) {
+            alert('Delete failed: ' + error.message);
+            console.error(error);
+          } else {
+            alert('Deleted');
+            renderGallery();
           }
-        };
-
-        wrapper.appendChild(delBtn);
-        container.appendChild(wrapper);
-      }
+        } else if (pass !== null) {
+          alert('Wrong password');
+        }
+      };
+      meta.appendChild(delBtn);
+      card.appendChild(meta);
+      container.appendChild(card);
+    }catch(e){
+      console.error('Render item error', e);
     }
+  }
+}
 
-    function filterMedia(type) {
-      const photos = document.querySelectorAll(".photo-item");
-      const videos = document.querySelectorAll(".video-item");
-
-      if (type === "all") {
-        photos.forEach(p => p.style.display = "block");
-        videos.forEach(v => v.style.display = "block");
-      } else if (type === "photos") {
-        photos.forEach(p => p.style.display = "block");
-        videos.forEach(v => v.style.display = "none");
-      } else if (type === "videos") {
-        photos.forEach(p => p.style.display = "none");
-        videos.forEach(v => v.style.display = "block");
-      }
-    }
-
-    loadMedia();
-  </script>
+/* start */
+setTab('all');            // default view - sets currentTab and calls render
+// expose helper for old callers
+function showTab(t){ setTab(t); }
+</script>
 </body>
 </html>
