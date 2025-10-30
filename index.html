@@ -3,37 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>039 Gallery</title>
+  <title>039 Photos 📸</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="nav">
-      <button id="menu-btn">☰</button>
-      <h1>GALLERY</h1>
-      <button id="search-btn">🔍</button>
-    </div>
-    <div class="tabs">
-      <button class="tab active">Albums</button>
-      <button class="tab">Photos</button>
-      <button class="tab">Videos</button>
-    </div>
-  </header>
+  <h1>039 Photos</h1>
 
-  <main>
-    <div class="upload-box">
-      <input type="file" id="upload" multiple accept="image/*" />
-    </div>
+  <form id="upload-form">
+    <input type="file" id="file-input" accept="image/*" />
+    <button type="submit">Upload</button>
+  </form>
 
-    <div id="photo-sections">
-      <!-- Photos grouped by date will appear here -->
-    </div>
-  </main>
+  <div id="gallery"></div>
 
-  <footer>
-    <p>Made with ❤️ by Admin</p>
-  </footer>
-
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
