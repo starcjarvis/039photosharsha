@@ -1,45 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>039 Photos Gallery</title>
   <style>
     body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f4f4f4;
+      font-family: Arial, sans-serif;
+      background: #fafafa;
       margin: 0;
       padding: 0;
+      text-align: center;
     }
 
     header {
       background: #111;
-      color: white;
+      color: #fff;
       padding: 15px;
       font-size: 22px;
-      text-align: center;
       font-weight: bold;
-      letter-spacing: 1px;
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      background: #222;
-    }
-
-    nav button {
-      flex: 1;
-      padding: 12px;
-      border: none;
-      background: #222;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    nav button.active {
-      background: #007bff;
     }
 
     #upload-section {
@@ -48,7 +27,7 @@
       padding: 15px;
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      text-align: center;
+      display: inline-block;
     }
 
     input, select, button {
@@ -58,11 +37,11 @@
       border: 1px solid #ccc;
     }
 
-    button.upload-btn {
+    button {
+      cursor: pointer;
       background: #007bff;
       color: white;
       border: none;
-      cursor: pointer;
     }
 
     #gallery {
@@ -78,11 +57,6 @@
       padding: 5px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       position: relative;
-      transition: transform 0.2s;
-    }
-
-    .photo-item:hover {
-      transform: scale(1.02);
     }
 
     .photo-item img, .photo-item video {
@@ -113,15 +87,6 @@
       border-radius: 5px;
       padding: 8px 12px;
       cursor: pointer;
-      z-index: 999;
-    }
-
-    .album-header {
-      text-align: left;
-      margin: 20px 0 10px 20px;
-      font-weight: bold;
-      font-size: 18px;
-      color: #333;
     }
 
     @media (max-width: 600px) {
@@ -132,29 +97,27 @@
 </head>
 <body>
 
-  <header>📸 039 Photos</header>
-
-  <nav>
-    <button id="allBtn" class="active" onclick="showTab('all')">All Media</button>
-    <button id="photosBtn" onclick="showTab('photos')">Photos</button>
-    <button id="videosBtn" onclick="showTab('videos')">Videos</button>
-    <button id="albumsBtn" onclick="showTab('albums')">Albums</button>
-  </nav>
-
+  <header>📸 039 Photos Gallery</header>
   <button id="admin-btn" onclick="adminLogin()">🔐 Admin Login</button>
 
   <section id="upload-section">
     <input type="file" id="file-input" accept="image/*,video/*" multiple><br>
     <select id="month-select">
       <option value="">Select Month</option>
-      <option>January</option><option>February</option><option>March</option>
-      <option>April</option><option>May</option><option>June</option>
-      <option>July</option><option>August</option><option>September</option>
-      <option>October</option><option>November</option><option>December</option>
-    </select>
-    <input type="text" id="occasion-input" placeholder="Enter Occasion Name">
-    <br>
-    <button class="upload-btn" onclick="uploadFiles()">⬆️ Upload</button>
+      <option value="January">January</option>
+      <option value="February">February</option>
+      <option value="March">March</option>
+      <option value="April">April</option>
+      <option value="May">May</option>
+      <option value="June">June</option>
+      <option value="July">July</option>
+      <option value="August">August</option>
+      <option value="September">September</option>
+      <option value="October">October</option>
+      <option value="November">November</option>
+      <option value="December">December</option>
+    </select><br>
+    <button onclick="uploadFiles()">⬆️ Upload</button>
   </section>
 
   <div id="gallery"></div>
@@ -162,7 +125,7 @@
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    // Supabase setup
+    // 🧠 Your Supabase credentials
     const supabaseUrl = "https://cksuswghafnksktbkbvg.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
     const supabase = createClient(supabaseUrl, supabaseKey);
@@ -171,114 +134,60 @@
     const gallery = document.getElementById('gallery');
     const fileInput = document.getElementById('file-input');
     const monthSelect = document.getElementById('month-select');
-    const occasionInput = document.getElementById('occasion-input');
 
     let isAdmin = false;
-    const ADMIN_PASSWORD = "harsha@112";
-
-    let currentTab = 'all';
-
-    window.showTab = function(tab) {
-      currentTab = tab;
-      document.querySelectorAll("nav button").forEach(btn => btn.classList.remove("active"));
-      document.getElementById(tab + "Btn").classList.add("active");
-      loadGallery();
-    };
-
-    async function uploadFiles() {
-      const files = fileInput.files;
-      const month = monthSelect.value;
-      const occasion = occasionInput.value.trim();
-
-      if (!month) return alert("Please select a month!");
-      if (!occasion) return alert("Please enter an occasion name!");
-      if (!files.length) return alert("Please select files!");
-
-      for (const file of files) {
-        const path = `${month}/${occasion}/${Date.now()}_${file.name}`;
-        const { error } = await supabase.storage.from(bucketName).upload(path, file);
-        if (error) console.error(error);
-      }
-
-      alert("Upload complete ✅");
-      fileInput.value = "";
-      loadGallery();
-    }
+    const ADMIN_PASSWORD = "039photos"; // change this if you want
 
     async function loadGallery() {
       const { data, error } = await supabase.storage.from(bucketName).list('', { limit: 100 });
       if (error) return console.error(error);
 
       gallery.innerHTML = "";
-      const albums = {};
-
       for (const file of data) {
-        const parts = file.name.split('/');
-        const month = parts[0] || "Unknown";
-        const occasion = parts[1] || "Misc";
-        const name = file.name;
+        const { data: urlData } = supabase.storage.from(bucketName).getPublicUrl(file.name);
+        const url = urlData.publicUrl;
 
-        if (!albums[month]) albums[month] = {};
-        if (!albums[month][occasion]) albums[month][occasion] = [];
-        albums[month][occasion].push(file);
-      }
+        const item = document.createElement('div');
+        item.className = 'photo-item';
 
-      if (currentTab === 'albums') {
-        for (const month in albums) {
-          const monthHeader = document.createElement('div');
-          monthHeader.className = 'album-header';
-          monthHeader.textContent = month;
-          gallery.appendChild(monthHeader);
-
-          for (const occasion in albums[month]) {
-            const occHeader = document.createElement('div');
-            occHeader.style.marginLeft = '30px';
-            occHeader.style.fontWeight = 'bold';
-            occHeader.textContent = `📁 ${occasion}`;
-            gallery.appendChild(occHeader);
-          }
+        let media;
+        if (file.name.match(/\.(mp4|webm|ogg)$/i)) {
+          media = document.createElement('video');
+          media.src = url;
+          media.controls = true;
+        } else {
+          media = document.createElement('img');
+          media.src = url;
         }
-        return;
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = "❌";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = () => deleteFile(file.name);
+        delBtn.style.display = isAdmin ? "inline-block" : "none";
+
+        item.appendChild(media);
+        item.appendChild(delBtn);
+        gallery.appendChild(item);
+      }
+    }
+
+    async function uploadFiles() {
+      const files = fileInput.files;
+      const month = monthSelect.value || "Unknown";
+
+      if (!files.length) return alert("Please select at least one file!");
+      if (!month) return alert("Please select a month!");
+
+      for (const file of files) {
+        const filePath = `${month}/${Date.now()}_${file.name}`;
+        const { error } = await supabase.storage.from(bucketName).upload(filePath, file);
+        if (error) console.error(error);
       }
 
-      for (const month in albums) {
-        for (const occasion in albums[month]) {
-          const sectionHeader = document.createElement('div');
-          sectionHeader.className = 'album-header';
-          sectionHeader.textContent = `${month} - ${occasion}`;
-          gallery.appendChild(sectionHeader);
-
-          for (const file of albums[month][occasion]) {
-            const { data: urlData } = supabase.storage.from(bucketName).getPublicUrl(file.name);
-            const url = urlData.publicUrl;
-
-            const item = document.createElement('div');
-            item.className = 'photo-item';
-
-            let media;
-            if (file.name.match(/\.(mp4|webm|ogg)$/i)) {
-              if (currentTab === 'photos') continue;
-              media = document.createElement('video');
-              media.src = url;
-              media.controls = true;
-            } else {
-              if (currentTab === 'videos') continue;
-              media = document.createElement('img');
-              media.src = url;
-            }
-
-            const delBtn = document.createElement('button');
-            delBtn.textContent = "❌";
-            delBtn.className = "delete-btn";
-            delBtn.onclick = () => deleteFile(file.name);
-            delBtn.style.display = isAdmin ? "inline-block" : "none";
-
-            item.appendChild(media);
-            item.appendChild(delBtn);
-            gallery.appendChild(item);
-          }
-        }
-      }
+      alert("Upload complete ✅");
+      fileInput.value = "";
+      loadGallery();
     }
 
     async function deleteFile(name) {
@@ -288,6 +197,7 @@
       loadGallery();
     }
 
+    // Admin Login
     window.adminLogin = function() {
       const entered = prompt("Enter admin password:");
       if (entered === ADMIN_PASSWORD) {
