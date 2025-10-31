@@ -1,167 +1,159 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>039 Photos (Developed by J.A.R.V.I.S)</title>
 <script src="https://unpkg.com/@supabase/supabase-js"></script>
-
 <style>
-  :root {
-    --accent: #0078ff;
-    --bg: #f4f6fb;
-    --text: #222;
+  :root{
+    --bg:#071225; --card:rgba(6,18,30,0.6);
+    --jarvis:#00f0ff; --jarvis2:#00c6ff; --jarvis3:#6b00ff;
+    --text:#d8f9ff; --muted:rgba(216,249,255,0.7);
+    --danger:#ff6363; --success:#10b981;
   }
-  body {
-    font-family: 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    margin: 0;
-    color: var(--text);
-  }
-  header {
-    background: linear-gradient(90deg, var(--accent), #00c6ff);
-    color: white;
-    padding: 16px;
-    text-align: center;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
-  .tabs {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 14px;
-    background: #fff;
-    border-bottom: 1px solid #e6e6e6;
-  }
-  .tab {
-    padding: 8px 16px;
-    border-radius: 20px;
-    background: #f1f3f6;
-    cursor: pointer;
-    font-weight: 600;
-    transition: 0.3s;
-  }
-  .tab:hover { background: #e7ebf0; }
-  .tab.active {
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  }
-  main {
-    max-width: 1080px;
-    margin: 20px auto;
-    padding: 0 12px;
-  }
-  .upload-card {
-    background: white;
-    border-radius: 14px;
-    padding: 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    text-align: center;
-  }
-  input[type=file] {
-    margin: 10px 0;
-  }
-  button.primary {
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 8px 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  button.primary:hover {
-    background: #006ae0;
-  }
-  #progressList {
-    margin-top: 10px;
-    text-align: left;
-  }
-  .progress-row {
-    background: #fff;
-    padding: 8px;
-    border-radius: 8px;
-    margin: 8px 0;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.04);
-  }
-  .progress-bar {
-    height: 8px;
-    background: #eee;
-    border-radius: 999px;
-    overflow: hidden;
-    margin: 6px 0;
-  }
-  .progress-fill {
-    height: 100%;
-    background: #10b981;
-    width: 0%;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 14px;
-    margin-top: 22px;
-  }
-  .card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
-    overflow: hidden;
-    transition: transform 0.2s ease;
-  }
-  .card:hover { transform: scale(1.02); }
-  .card img, .card video {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-  }
-  .meta {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px;
-    font-size: 12px;
-    color: #666;
-    align-items: center;
-  }
-  .delete-btn {
-    background: #ef4444;
-    color: #fff;
-    border: none;
-    padding: 5px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-  @media(max-width:600px){
-    .card img, .card video{ height: 140px; }
-  }
+  html,body{height:100%;margin:0;background:#000;color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto}
+  /* Background layers */
+  #bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg-img{position:absolute;inset:0;background-image:url('https://i.imgur.com/0Z3s4tO.jpg');background-size:cover;background-position:center;filter:contrast(1.05) saturate(1.05);transform:scale(1.02)}
+  .bg-noise{position:absolute;inset:0;background-image:
+    linear-gradient(transparent 96%, rgba(0,255,255,0.02)96%),
+    linear-gradient(90deg, transparent 96%, rgba(107,0,255,0.02)96%);opacity:0.04}
+  .scanline{position:absolute;left:-50%;right:-50%;height:2px;top:-30%;background:
+    linear-gradient(90deg, rgba(0,255,255,0) 0%, rgba(0,255,255,0.14) 45%, rgba(255,255,255,0.9)50%, rgba(0,255,255,0.14)55%, rgba(0,255,255,0)100%);
+    filter:blur(6px); animation:scan 16s linear infinite}
+  @keyframes scan{0%{transform:translateY(-40vh)}50%{transform:translateY(120vh)}100%{transform:translateY(240vh)}}
+  .glow{position:absolute;border-radius:50%;width:1100px;height:1100px;filter:blur(120px);opacity:0.12}
+  .g1{left:-18%;top:-34%;background:radial-gradient(circle at 30% 30%, rgba(107,0,255,0.95) 0%, rgba(0,198,255,0.12) 18%, rgba(0,0,0,0) 60%);animation:float1 14s ease-in-out infinite}
+  .g2{right:-26%;top:6%;background:radial-gradient(circle at 70% 60%, rgba(0,198,255,0.95) 0%, rgba(107,0,255,0.08) 18%, rgba(0,0,0,0) 60%);animation:float2 18s ease-in-out infinite}
+  @keyframes float1{0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)}}
+  @keyframes float2{0%{transform:translateY(0)}50%{transform:translateY(-22px)}100%{transform:translateY(0)}}
+  /* App container */
+  .app{position:relative;z-index:3;max-width:1180px;margin:28px auto;padding:12px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(6px);box-shadow:0 8px 40px rgba(2,6,23,0.6)}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:52px;height:52px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#001018;background:linear-gradient(135deg,var(--jarvis3),var(--jarvis2));box-shadow:0 6px 18px rgba(0,198,255,0.12)}
+  h1{margin:0;font-size:18px}
+  .sub{font-size:12px;color:var(--muted)}
+  /* tabs */
+  .tabs{display:flex;gap:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+  .tab{padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.02);cursor:pointer;font-weight:700;color:var(--text);transition:all .12s}
+  .tab.active{background:linear-gradient(90deg, rgba(0,198,255,0.12), rgba(107,0,255,0.12));box-shadow:0 6px 20px rgba(0,198,255,0.06);border-color:rgba(0,198,255,0.35)}
+  /* upload panel */
+  .panel{margin-top:16px;background:var(--card);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
+  .file-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .choose{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg, rgba(0,198,255,0.12), rgba(107,0,255,0.12));border:1px solid rgba(0,198,255,0.16);cursor:pointer;font-weight:800;color:#001018}
+  .choose .ic{width:28px;height:28px;border-radius:8px;background:linear-gradient(90deg,var(--jarvis),var(--jarvis3));display:grid;place-items:center;font-weight:900}
+  input[type=file]{display:none}
+  .btn{padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,var(--jarvis3),var(--jarvis2));color:#001018;border:none;cursor:pointer;font-weight:900;box-shadow:0 8px 30px rgba(0,198,255,0.12)}
+  .btn:active{transform:translateY(1px)}
+  .uploader-name{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
+  .status{color:var(--muted);font-weight:700}
+  /* progress */
+  #progressList{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+  .progress-row{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.02)}
+  .p-title{font-weight:800}
+  .pbar{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:6px}
+  .pfill{height:100%;width:0%;background:linear-gradient(90deg,var(--jarvis),var(--jarvis2));transition:width .08s linear}
+  /* gallery */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+  .card{border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.16));overflow:hidden;border:1px solid rgba(0,198,255,0.06);box-shadow:0 10px 40px rgba(2,6,23,0.6);position:relative;transition:transform .12s}
+  .card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,198,255,0.12)}
+  .media{height:180px;background:rgba(0,0,0,0.08);display:block}
+  .media img,.media video{width:100%;height:100%;object-fit:cover;display:block}
+  .meta{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:var(--muted);font-size:13px}
+  .fname{font-weight:800;color:var(--text);max-width:70%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .fmeta{font-size:12px;opacity:0.8}
+  .neon{position:absolute;inset:6px;border-radius:10px;pointer-events:none;border:1px solid rgba(0,198,255,0.06);box-shadow:inset 0 0 10px rgba(0,198,255,0.03)}
+  .delete{padding:6px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,#ff6363,#ff8a4d);color:white;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(255,99,99,0.12)}
+  /* uploaded names list */
+  .u-list{display:flex;flex-direction:column;gap:8px;padding:8px}
+  .u-item{padding:8px 10px;border-radius:8px;background:linear-gradient(90deg, rgba(0,198,255,0.08), rgba(107,0,255,0.06));cursor:pointer;font-weight:800;color:#001018;border:1px solid rgba(0,198,255,0.16)}
+  .u-item:hover{transform:translateY(-3px)}
+  /* loader */
+  #loader{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.8));z-index:9}
+  .ring{width:96px;height:96px;border-radius:50%;border:6px solid rgba(0,0,0,0.18);position:relative;display:grid;place-items:center}
+  .ring:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:6px solid transparent;border-top-color:var(--jarvis);animation:spin 1.8s linear infinite}
+  .ring:after{content:"";position:absolute;inset:-16px;border-radius:50%;border:4px solid transparent;border-bottom-color:var(--jarvis3);filter:blur(6px);animation:spin 3s linear infinite}
+  .loader-text{margin-top:12px;color:var(--muted);font-weight:800}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* music control */
+  .music-toggle{padding:8px 10px;border-radius:8px;background:linear-gradient(90deg,var(--jarvis2),var(--jarvis));color:#001018;font-weight:800;border:0;cursor:pointer}
+  /* responsiveness */
+  @media(max-width:720px){ .media{height:140px} .brand h1{font-size:16px} }
 </style>
 </head>
 <body>
-
-<header>📸 039 Photos (Developed by J.A.R.V.I.S)</header>
-
-<div class="tabs">
-  <div class="tab active" data-tab="all" onclick="setTab('all')">All Media</div>
-  <div class="tab" data-tab="photos" onclick="setTab('photos')">Photos</div>
-  <div class="tab" data-tab="videos" onclick="setTab('videos')">Videos</div>
-</div>
-
-<main>
-  <div class="upload-card">
-    <h3>Upload Photos or Videos</h3>
-    <input id="fileInput" type="file" accept="image/*,video/*" multiple />
-    <br>
-    <button class="primary" onclick="startUpload()">Upload</button>
-    <div id="status" style="margin-top:6px;color:#555;"></div>
-    <div id="progressList"></div>
+  <!-- BACKGROUND -->
+  <div id="bgwrap" aria-hidden="true">
+    <div class="bg-img" id="bgImg"></div>
+    <div class="bg-noise"></div>
+    <div class="glow g1"></div>
+    <div class="glow g2"></div>
+    <div class="scanline"></div>
   </div>
 
-  <div id="gallery" class="grid"></div>
-</main>
+  <!-- Loader (3s) -->
+  <div id="loader" role="status" aria-live="polite">
+    <div style="text-align:center">
+      <div class="ring"></div>
+      <div class="loader-text">Initializing J.A.R.V.I.S. Interface...</div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="app" role="application" aria-label="039 Photos app">
+    <header>
+      <div class="brand">
+        <div class="logo">039</div>
+        <div>
+          <h1>039 Photos <span style="font-weight:600;color:var(--jarvis2);font-size:12px">— Developed by J.A.R.V.I.S</span></h1>
+          <div class="sub">Upload • Share • Manage (admin delete)</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;align-items:center">
+        <div class="tabs" role="tablist" aria-label="Main tabs">
+          <button class="tab active" data-tab="all" onclick="setTab('all')">All Media</button>
+          <button class="tab" data-tab="photos" onclick="setTab('photos')">Photos</button>
+          <button class="tab" data-tab="videos" onclick="setTab('videos')">Videos</button>
+          <button class="tab" data-tab="uploaders" onclick="setTab('uploaders')">Uploaded Names</button>
+        </div>
+        <button class="music-toggle" id="musicBtn" title="Toggle music" onclick="toggleMusic()">Mute</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="panel" style="padding:14px">
+        <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <label for="fileInput" class="choose" title="Choose files">
+              <div class="ic">+</div>
+              <div>Choose Files</div>
+            </label>
+            <input id="fileInput" type="file" accept="image/*,video/*" multiple />
+            <input id="uploaderName" class="uploader-name" placeholder="Your name (shown to others)" />
+            <button class="btn" onclick="startUpload()">Upload</button>
+          </div>
+
+          <div class="status" id="status">Ready — anyone can upload</div>
+        </div>
+
+        <div id="progressList"></div>
+      </div>
+
+      <div id="gallerySection">
+        <div id="gallery" class="grid" aria-live="polite"></div>
+      </div>
+
+      <div id="uploaderSection" style="display:none;margin-top:12px">
+        <div class="panel">
+          <h3 style="margin:0 0 8px 0;color:var(--jarvis2)">Uploaded Names</h3>
+          <div id="uploaderList" class="u-list"></div>
+        </div>
+      </div>
+    </section>
+  </div>
 
 <script>
 /* ------------------ CONFIG ------------------ */
@@ -169,138 +161,311 @@ const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
 const BUCKET = "photos";
 const ADMIN_PASSWORD = "harsha@112";
-/* -------------------------------------------- */
+/* ------------------------------------------------- */
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let currentTab = 'all';
+let galleryFilterUploader = null;
 
-function setTab(tab){
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
-  renderGallery();
+/* Helper human size */
+function humanSize(bytes){
+  if(!bytes && bytes!==0) return '';
+  if(bytes < 1024) return bytes + ' B';
+  if(bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/(1024*1024)).toFixed(2) + ' MB';
 }
 
-/* Upload with Progress */
+/* TABS */
+function setTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+  document.getElementById('gallery').style.display = (tab==='uploaders') ? 'none' : 'grid';
+  document.getElementById('uploaderSection').style.display = (tab==='uploaders') ? 'block' : 'none';
+  if(tab!=='uploaders') galleryFilterUploader = null;
+  renderGallery();
+  if(tab==='uploaders') renderUploaderList();
+}
+
+/* ---------- Upload with XHR (progress) ---------- */
 function uploadXHR(file, path, onProgress){
   return new Promise((resolve,reject)=>{
     const url = `${SUPABASE_URL}/storage/v1/object/${encodeURIComponent(BUCKET)}/${encodeURIComponent(path)}`;
     const xhr = new XMLHttpRequest();
-    xhr.open('PUT', url);
+    xhr.open('PUT', url, true);
     xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_KEY);
     xhr.setRequestHeader('apikey', SUPABASE_KEY);
-    if (file.type) xhr.setRequestHeader('Content-Type', file.type);
-    xhr.upload.onprogress = e=>{
-      if(e.lengthComputable && onProgress){
-        onProgress(e.loaded, e.total);
+    if(file.type) xhr.setRequestHeader('Content-Type', file.type);
+    xhr.upload.onprogress = (e) => { if(e.lengthComputable && onProgress) onProgress(e.loaded, e.total); };
+    xhr.onreadystatechange = () => {
+      if(xhr.readyState===4){
+        if(xhr.status>=200 && xhr.status<300) resolve(true);
+        else reject(new Error('Upload failed ' + xhr.status + ': ' + xhr.responseText));
       }
     };
-    xhr.onload = ()=> xhr.status>=200 && xhr.status<300 ? resolve() : reject(xhr.responseText);
-    xhr.onerror = ()=> reject("Upload failed");
+    xhr.onerror = ()=> reject(new Error('Network error'));
     xhr.send(file);
   });
 }
 
+/* Start upload: include uploader name in filename prefix so we can show it later */
 async function startUpload(){
   const input = document.getElementById('fileInput');
-  const files = Array.from(input.files);
-  if(!files.length) return alert('Select files to upload');
+  const files = Array.from(input.files || []);
+  const uploader = (document.getElementById('uploaderName').value || 'Anonymous').trim() || 'Anonymous';
+  if(!files.length) return alert('Select file(s) first');
 
-  document.getElementById('status').textContent = `Uploading ${files.length} file(s)...`;
-  const progressList = document.getElementById('progressList');
-  progressList.innerHTML = '';
+  document.getElementById('status').innerText = `Uploading ${files.length} file(s)...`;
+  const plist = document.getElementById('progressList');
+  plist.innerHTML = '';
 
-  const tasks = files.map((file, i)=>{
-    const id = `p-${i}`;
-    const row = document.createElement('div');
-    row.className='progress-row';
-    row.innerHTML = `
-      <div>${file.name}</div>
-      <div class="progress-bar"><div class="progress-fill" id="${id}"></div></div>
-    `;
-    progressList.appendChild(row);
+  const promises = files.map((file, i) => {
+    // UI
+    const row = document.createElement('div'); row.className='progress-row';
+    row.innerHTML = `<div class="p-title">${file.name} <span style="color:var(--jarvis2);font-weight:900">(${humanSize(file.size)})</span></div>
+      <div class="pbar"><div id="pf-${i}" class="pfill"></div></div>`;
+    plist.appendChild(row);
 
-    const name = `${Date.now()}_${Math.random().toString(36).slice(2,8)}_${file.name}`;
-    return uploadXHR(file, name, (loaded,total)=>{
-      document.getElementById(id).style.width = (loaded/total*100)+'%';
-    });
+    const safeUploader = uploader.replace(/[^a-zA-Z0-9_\-]/g,'_').slice(0,40) || 'Anonymous';
+    const unique = `${safeUploader}__${Date.now()}_${Math.random().toString(36).slice(2,8)}_${file.name.replace(/\s+/g,'_')}`;
+
+    return uploadXHR(file, unique, (loaded, total) => {
+      const pct = Math.round((loaded/total)*100);
+      const el = document.getElementById(`pf-${i}`);
+      if(el) el.style.width = pct + '%';
+    }).then(() => ({ ok:true, name: unique, orig:file.name, size:file.size, uploader:safeUploader }))
+      .catch(err => ({ ok:false, err: err.message, name: unique, orig:file.name }));
   });
 
-  await Promise.all(tasks);
-  document.getElementById('status').textContent = 'All uploads complete!';
-  input.value='';
-  renderGallery();
+  const results = await Promise.all(promises);
+  const failed = results.filter(r => !r.ok);
+  if(failed.length){
+    console.error('Failed:', failed);
+    alert(`${failed.length} file(s) failed to upload. See console.`);
+    document.getElementById('status').innerText = `${failed.length} file(s) failed`;
+  } else {
+    document.getElementById('status').innerText = 'All uploads complete!';
+  }
+  input.value = '';
+  // after upload, refresh gallery (uploader names preserved in filename)
+  await renderGallery();
 }
 
-/* Load and Display Media */
+/* ---------- List & render gallery ---------- */
 async function listAllObjects(){
-  const { data, error } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
-  return data || [];
+  try{
+    const { data, error } = await supabase.storage.from(BUCKET).list('', { limit: 1000 });
+    if(error){ console.error('List error', error); return []; }
+    return data || [];
+  } catch(e){
+    console.error('List exception', e); return [];
+  }
 }
 
 function getPublicUrl(path){
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
-  return data.publicUrl;
+  return (data && data.publicUrl) ? data.publicUrl : null;
+}
+
+function parseUploaderFromName(filename){
+  // Format used on upload: uploader__timestamp_rand_originalname
+  const parts = filename.split('__');
+  if(parts.length < 2) return 'Unknown';
+  return parts[0] || 'Unknown';
+}
+
+function parseOriginalName(filename){
+  // remove uploader prefix part
+  const parts = filename.split('__');
+  if(parts.length < 2) return filename;
+  return parts.slice(1).join('__');
+}
+
+function formatDate(ts){
+  if(!ts) return '';
+  return new Date(ts).toLocaleString();
 }
 
 async function renderGallery(){
-  const container = document.getElementById('gallery');
-  container.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;">Loading...</p>';
-  const files = await listAllObjects();
-  container.innerHTML = '';
-
-  const filtered = files.filter(f=>{
-    if(currentTab==='all') return true;
-    const isVideo = /\.(mp4|mov|avi|webm|mkv)$/i.test(f.name);
-    return currentTab==='videos' ? isVideo : !isVideo;
-  });
-
-  if(!filtered.length){
-    container.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#777;">No media found.</p>';
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted)">Loading...</div>`;
+  const objs = await listAllObjects();
+  gallery.innerHTML = '';
+  if(!objs.length){
+    gallery.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--muted)">No media yet — upload files to start.</div>`;
     return;
   }
 
-  filtered.sort((a,b)=> new Date(b.updated_at||0) - new Date(a.updated_at||0));
+  // filter by tab
+  let filtered = objs.filter(o => {
+    if(currentTab === 'all') return true;
+    const isVideo = /\.(mp4|mov|avi|webm|mkv)$/i.test(o.name);
+    if(currentTab === 'videos') return isVideo;
+    if(currentTab === 'photos') return !isVideo;
+    return true;
+  });
 
-  for(const f of filtered){
-    const url = getPublicUrl(f.name);
-    const card = document.createElement('div');
-    card.className='card';
+  // if galleryFilterUploader set, filter by uploader
+  if(galleryFilterUploader){
+    filtered = filtered.filter(o => parseUploaderFromName(o.name) === galleryFilterUploader);
+  }
 
-    if(/\.(mp4|mov|avi|webm|mkv)$/i.test(f.name)){
-      const v = document.createElement('video');
-      v.src=url; v.controls=true;
-      card.appendChild(v);
-    }else{
-      const img = document.createElement('img');
-      img.src=url;
-      card.appendChild(img);
-    }
+  // newest first
+  filtered.sort((a,b) => (new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at)));
 
-    const meta = document.createElement('div');
-    meta.className='meta';
-    meta.innerHTML = `<span>${f.name}</span>`;
-    const del = document.createElement('button');
-    del.className='delete-btn';
-    del.textContent='Delete';
-    del.onclick = async()=>{
-      const pass = prompt('Enter admin password:');
-      if(pass===ADMIN_PASSWORD){
-        await supabase.storage.from(BUCKET).remove([f.name]);
-        alert('Deleted successfully');
-        renderGallery();
-      }else if(pass!==null){
-        alert('Wrong password');
+  for(const obj of filtered){
+    try{
+      const url = getPublicUrl(obj.name);
+      if(!url) continue;
+      const card = document.createElement('div'); card.className='card';
+      const media = document.createElement('div'); media.className='media';
+      if(/\.(mp4|mov|avi|webm|mkv)$/i.test(obj.name)){
+        const v = document.createElement('video'); v.src = url; v.controls = true; v.preload='metadata'; media.appendChild(v);
+      } else {
+        const img = document.createElement('img'); img.src = url; img.loading='lazy'; media.appendChild(img);
       }
-    };
-    meta.appendChild(del);
-    card.appendChild(meta);
-    container.appendChild(card);
+      card.appendChild(media);
+
+      const neon = document.createElement('div'); neon.className='neon'; card.appendChild(neon);
+
+      const meta = document.createElement('div'); meta.className='meta';
+      const left = document.createElement('div'); left.style.display='flex'; left.style.flexDirection='column';
+      const fname = document.createElement('div'); fname.className='fname'; fname.textContent = parseOriginalName(obj.name);
+      const fmeta = document.createElement('div'); fmeta.className='fmeta'; fmeta.textContent = `${parseUploaderFromName(obj.name)} • ${formatDate(obj.updated_at || obj.created_at)} • ${humanSize(obj.metadata && obj.metadata.size ? obj.metadata.size : '')}`;
+      left.appendChild(fname); left.appendChild(fmeta);
+      meta.appendChild(left);
+
+      const right = document.createElement('div');
+      const delBtn = document.createElement('button'); delBtn.className='delete'; delBtn.textContent='Delete';
+      delBtn.onclick = async () => {
+        const pass = prompt('Enter admin password:');
+        if(pass === null) return;
+        if(pass === ADMIN_PASSWORD){
+          try{
+            const { error } = await supabase.storage.from(BUCKET).remove([obj.name]);
+            if(error) { alert('Delete failed: ' + (error.message||JSON.stringify(error))); console.error(error); }
+            else { alert('Deleted'); renderGallery(); }
+          } catch(e){ console.error(e); alert('Delete error'); }
+        } else alert('Wrong password');
+      };
+      right.appendChild(delBtn);
+      meta.appendChild(right);
+      card.appendChild(meta);
+      gallery.appendChild(card);
+    }catch(e){ console.error('Render err', e); }
   }
 }
 
-/* Initialize */
-setTab('all');
-</script>
+/* ---------- Uploader names list (unique) ---------- */
+async function renderUploaderList(){
+  const listDiv = document.getElementById('uploaderList');
+  listDiv.innerHTML = `<div style="color:var(--muted)">Loading uploaders...</div>`;
+  const objs = await listAllObjects();
+  const names = new Set();
+  for(const o of objs){
+    const u = parseUploaderFromName(o.name); if(u) names.add(u);
+  }
+  listDiv.innerHTML = '';
+  if(names.size===0){ listDiv.innerHTML = `<div style="color:var(--muted)">No uploaders yet</div>`; return; }
+  Array.from(names).sort().forEach(n => {
+    const el = document.createElement('div'); el.className='u-item'; el.textContent = n;
+    el.onclick = ()=> { galleryFilterUploader = n; setTab('all'); /* show all filtered by uploader */ };
+    listDiv.appendChild(el);
+  });
+}
 
+/* ---------- Init ---------- */
+setTimeout(()=>{ // show loader for 3s
+  document.getElementById('loader').style.display='none';
+  setTab('all');
+}, 3000);
+
+/* render initial quietly */
+renderGallery();
+
+/* Small parallax for bg */
+(function(){
+  const bg = document.getElementById('bgImg');
+  window.addEventListener('mousemove', e=> {
+    const cw = window.innerWidth, ch = window.innerHeight;
+    const tx = (e.clientX - cw/2) / (cw/2);
+    const ty = (e.clientY - ch/2) / (ch/2);
+    const rx = tx * 12, ry = ty * 8;
+    bg.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(1.03)`;
+  });
+})();
+
+/* -------------------- WebAudio: cinematic ambient (royalty-free style synthesis) -------------------- */
+/* This synthesizes a looping ambient cinematic hum to avoid embedding copyrighted audio.
+   It auto-starts and loops. Browsers may block autoplay; if so, user can toggle using button. */
+let audioCtx, masterGain, isPlaying = false;
+function initAudio(){
+  if(audioCtx) return;
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  masterGain = audioCtx.createGain(); masterGain.gain.value = 0.16; masterGain.connect(audioCtx.destination);
+  // create two detuned saw oscillators for pad
+  const o1 = audioCtx.createOscillator(), o2 = audioCtx.createOscillator();
+  o1.type = 'sawtooth'; o2.type = 'sawtooth';
+  o1.frequency.value = 55; o2.frequency.value = 55 * 1.002;
+  const o1Gain = audioCtx.createGain(); o1Gain.gain.value = 0.4;
+  const o2Gain = audioCtx.createGain(); o2Gain.gain.value = 0.3;
+  // bandpass filter for cinematic tone
+  const bp = audioCtx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value = 420; bp.Q.value = 0.8;
+  // subtle LFO on filter
+  const lfo = audioCtx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 0.08;
+  const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 200;
+  lfo.connect(lfoGain); lfoGain.connect(bp.frequency);
+  // reverb-like using delay + feedback
+  const delay = audioCtx.createDelay(); delay.delayTime.value = 0.6;
+  const fb = audioCtx.createGain(); fb.gain.value = 0.45;
+  delay.connect(fb); fb.connect(delay);
+  // connect chain
+  o1.connect(o1Gain); o2.connect(o2Gain);
+  o1Gain.connect(bp); o2Gain.connect(bp);
+  bp.connect(delay); delay.connect(masterGain); bp.connect(masterGain);
+  // soft noise layer (for texture)
+  const bufferSize = 2*audioCtx.sampleRate;
+  const noiseBuff = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = noiseBuff.getChannelData(0);
+  for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * 0.0025;
+  const noise = audioCtx.createBufferSource(); noise.buffer = noiseBuff; noise.loop = true;
+  const noiseGain = audioCtx.createGain(); noiseGain.gain.value = 0.25; noise.connect(noiseGain); noiseGain.connect(masterGain);
+  // lowpass swell envelope
+  function startAll(){
+    try{
+      o1.start(); o2.start(); lfo.start(); noise.start();
+      isPlaying = true;
+      document.getElementById('musicBtn').textContent = 'Mute';
+    }catch(e){ /* already started maybe */ }
+  }
+  startAll();
+}
+function toggleMusic(){
+  try{
+    if(!audioCtx) initAudio();
+    if(audioCtx.state === 'suspended') audioCtx.resume();
+  } catch(e){ console.error(e); }
+  if(!isPlaying){
+    initAudio();
+    isPlaying = true;
+    document.getElementById('musicBtn').textContent = 'Mute';
+  } else {
+    if(masterGain) masterGain.gain.value = 0;
+    isPlaying = false;
+    document.getElementById('musicBtn').textContent = 'Play';
+  }
+}
+/* try to start on load (may be blocked by browser) */
+window.addEventListener('load', async ()=>{
+  try{ initAudio(); } catch(e){ console.error('Audio start blocked', e); document.getElementById('musicBtn').textContent='Play'; }
+});
+
+/* Accessibility: allow Enter key to start audio on mobile if blocked */
+document.getElementById('musicBtn').addEventListener('click', async ()=>{
+  if(audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
+});
+
+/* --------------------------------------------------------------------------- */
+
+</script>
 </body>
-</html>
+  </html>
