@@ -12,22 +12,35 @@
     --text:#d8f9ff; --muted:rgba(216,249,255,0.7);
     --danger:#ff6363; --success:#10b981;
   }
-  html,body{height:100%;margin:0;background:#000;color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto}
-  /* Background layers */
-  #bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-  .bg-img{position:absolute;inset:0;background-image:url('https://i.imgur.com/0Z3s4tO.jpg');background-size:cover;background-position:center;filter:contrast(1.05) saturate(1.05);transform:scale(1.02)}
-  .bg-noise{position:absolute;inset:0;background-image:
-    linear-gradient(transparent 96%, rgba(0,255,255,0.02)96%),
-    linear-gradient(90deg, transparent 96%, rgba(107,0,255,0.02)96%);opacity:0.04}
+  html,body{height:100%;margin:0;background:#000;color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,-apple-system}
+  /* CSS-only animated background (Option B) */
+  #bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,#000010 0%, #00061a 50%, #001428 100%);}
+  .bg-grid{position:absolute;inset:0;opacity:0.08;background-image:
+    radial-gradient(circle at 10% 10%, rgba(0,198,255,0.65) 0px, rgba(0,0,0,0) 60px),
+    radial-gradient(circle at 90% 80%, rgba(107,0,255,0.6) 0px, rgba(0,0,0,0) 100px),
+    linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+    background-size: 500px 500px, 700px 700px, 100% 100%;}
   .scanline{position:absolute;left:-50%;right:-50%;height:2px;top:-30%;background:
-    linear-gradient(90deg, rgba(0,255,255,0) 0%, rgba(0,255,255,0.14) 45%, rgba(255,255,255,0.9)50%, rgba(0,255,255,0.14)55%, rgba(0,255,255,0)100%);
-    filter:blur(6px); animation:scan 16s linear infinite}
+    linear-gradient(90deg, rgba(0,255,255,0) 0%, rgba(0,255,255,0.12) 45%, rgba(255,255,255,0.9)50%, rgba(0,255,255,0.12)55%, rgba(0,255,255,0)100%);
+    filter:blur(6px); animation:scan 16s linear infinite;opacity:0.07}
   @keyframes scan{0%{transform:translateY(-40vh)}50%{transform:translateY(120vh)}100%{transform:translateY(240vh)}}
-  .glow{position:absolute;border-radius:50%;width:1100px;height:1100px;filter:blur(120px);opacity:0.12}
+  .particles {
+    position:absolute;inset:-10%;z-index:0;pointer-events:none;opacity:0.12;
+    background:
+      radial-gradient(circle at 10% 10%, rgba(0,198,255,0.08) 0 2px, transparent 2px),
+      radial-gradient(circle at 30% 80%, rgba(107,0,255,0.06) 0 2px, transparent 2px),
+      radial-gradient(circle at 70% 30%, rgba(0,255,200,0.06) 0 2px, transparent 2px);
+    background-size: 40px 40px, 60px 60px, 50px 50px;
+    animation: drift 14s linear infinite;
+  }
+  @keyframes drift{ 0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)} }
+
+  .glow{position:absolute;border-radius:50%;width:900px;height:900px;filter:blur(140px);opacity:0.12}
   .g1{left:-18%;top:-34%;background:radial-gradient(circle at 30% 30%, rgba(107,0,255,0.95) 0%, rgba(0,198,255,0.12) 18%, rgba(0,0,0,0) 60%);animation:float1 14s ease-in-out infinite}
   .g2{right:-26%;top:6%;background:radial-gradient(circle at 70% 60%, rgba(0,198,255,0.95) 0%, rgba(107,0,255,0.08) 18%, rgba(0,0,0,0) 60%);animation:float2 18s ease-in-out infinite}
   @keyframes float1{0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)}}
   @keyframes float2{0%{transform:translateY(0)}50%{transform:translateY(-22px)}100%{transform:translateY(0)}}
+
   /* App container */
   .app{position:relative;z-index:3;max-width:1180px;margin:28px auto;padding:12px}
   header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(6px);box-shadow:0 8px 40px rgba(2,6,23,0.6)}
@@ -51,7 +64,7 @@
   .status{color:var(--muted);font-weight:700}
   /* progress */
   #progressList{margin-top:12px;display:flex;flex-direction:column;gap:8px}
-  .progress-row{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.02)}
+  .progress-row{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.16));border:1px solid rgba(255,255,255,0.02)}
   .p-title{font-weight:800}
   .pbar{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:6px}
   .pfill{height:100%;width:0%;background:linear-gradient(90deg,var(--jarvis),var(--jarvis2));transition:width .08s linear}
@@ -80,14 +93,14 @@
   /* music control */
   .music-toggle{padding:8px 10px;border-radius:8px;background:linear-gradient(90deg,var(--jarvis2),var(--jarvis));color:#001018;font-weight:800;border:0;cursor:pointer}
   /* responsiveness */
-  @media(max-width:720px){ .media{height:140px} .brand h1{font-size:16px} }
+  @media(max-width:720px){ .media{height:140px} .brand h1{font-size:16px} .logo{width:44px;height:44px} }
 </style>
 </head>
 <body>
-  <!-- BACKGROUND -->
+  <!-- BACKGROUND (CSS-only) -->
   <div id="bgwrap" aria-hidden="true">
-    <div class="bg-img" id="bgImg"></div>
-    <div class="bg-noise"></div>
+    <div class="bg-grid"></div>
+    <div class="particles"></div>
     <div class="glow g1"></div>
     <div class="glow g2"></div>
     <div class="scanline"></div>
@@ -119,7 +132,8 @@
           <button class="tab" data-tab="videos" onclick="setTab('videos')">Videos</button>
           <button class="tab" data-tab="uploaders" onclick="setTab('uploaders')">Uploaded Names</button>
         </div>
-        <button class="music-toggle" id="musicBtn" title="Toggle music" onclick="toggleMusic()">Mute</button>
+        <!-- SINGLE upper-right music button -->
+        <button class="music-toggle" id="musicBtn" title="Toggle music" onclick="toggleMusic()">Loading…</button>
       </div>
     </header>
 
@@ -139,7 +153,7 @@
           <div class="status" id="status">Ready — anyone can upload</div>
         </div>
 
-        <div id="progressList"></div>
+        <div id="progressList" aria-live="polite"></div>
       </div>
 
       <div id="gallerySection">
@@ -211,32 +225,48 @@ function uploadXHR(file, path, onProgress){
 async function startUpload(){
   const input = document.getElementById('fileInput');
   const files = Array.from(input.files || []);
-  const uploader = (document.getElementById('uploaderName').value || 'Anonymous').trim() || 'Anonymous';
+  const uploaderRaw = (document.getElementById('uploaderName').value || 'Anonymous').trim() || 'Anonymous';
   if(!files.length) return alert('Select file(s) first');
 
   document.getElementById('status').innerText = `Uploading ${files.length} file(s)...`;
   const plist = document.getElementById('progressList');
   plist.innerHTML = '';
 
-  const promises = files.map((file, i) => {
-    // UI
-    const row = document.createElement('div'); row.className='progress-row';
-    row.innerHTML = `<div class="p-title">${file.name} <span style="color:var(--jarvis2);font-weight:900">(${humanSize(file.size)})</span></div>
-      <div class="pbar"><div id="pf-${i}" class="pfill"></div></div>`;
-    plist.appendChild(row);
+  // limit concurrency to 3
+  const concurrency = 3;
+  let idx = 0;
+  const results = [];
 
-    const safeUploader = uploader.replace(/[^a-zA-Z0-9_\-]/g,'_').slice(0,40) || 'Anonymous';
-    const unique = `${safeUploader}__${Date.now()}_${Math.random().toString(36).slice(2,8)}_${file.name.replace(/\s+/g,'_')}`;
+  async function worker(i){
+    while(true){
+      const fileIndex = idx++;
+      if(fileIndex >= files.length) break;
+      const file = files[fileIndex];
 
-    return uploadXHR(file, unique, (loaded, total) => {
-      const pct = Math.round((loaded/total)*100);
-      const el = document.getElementById(`pf-${i}`);
-      if(el) el.style.width = pct + '%';
-    }).then(() => ({ ok:true, name: unique, orig:file.name, size:file.size, uploader:safeUploader }))
-      .catch(err => ({ ok:false, err: err.message, name: unique, orig:file.name }));
-  });
+      const row = document.createElement('div'); row.className='progress-row';
+      row.innerHTML = `<div class="p-title">${file.name} <span style="color:var(--jarvis2);font-weight:900">(${humanSize(file.size)})</span></div>
+        <div class="pbar"><div id="pf-${fileIndex}" class="pfill"></div></div>`;
+      plist.appendChild(row);
 
-  const results = await Promise.all(promises);
+      const safeUploader = uploaderRaw.replace(/[^a-zA-Z0-9_\-]/g,'_').slice(0,40) || 'Anonymous';
+      const unique = `${safeUploader}__${Date.now()}_${Math.random().toString(36).slice(2,8)}_${file.name.replace(/\s+/g,'_')}`;
+
+      try{
+        await uploadXHR(file, unique, (loaded, total) => {
+          const pct = Math.round((loaded/total)*100);
+          const el = document.getElementById(`pf-${fileIndex}`);
+          if(el) el.style.width = pct + '%';
+        });
+        results.push({ ok:true, name: unique, orig:file.name, size:file.size, uploader:safeUploader });
+      } catch(err){
+        results.push({ ok:false, err: err.message, name: unique, orig:file.name });
+      }
+    }
+  }
+
+  // spawn workers
+  await Promise.all(Array.from({length: Math.min(concurrency, files.length)}).map((_,i)=> worker(i)));
+
   const failed = results.filter(r => !r.ok);
   if(failed.length){
     console.error('Failed:', failed);
@@ -267,14 +297,12 @@ function getPublicUrl(path){
 }
 
 function parseUploaderFromName(filename){
-  // Format used on upload: uploader__timestamp_rand_originalname
   const parts = filename.split('__');
   if(parts.length < 2) return 'Unknown';
   return parts[0] || 'Unknown';
 }
 
 function parseOriginalName(filename){
-  // remove uploader prefix part
   const parts = filename.split('__');
   if(parts.length < 2) return filename;
   return parts.slice(1).join('__');
@@ -329,7 +357,7 @@ async function renderGallery(){
 
       const meta = document.createElement('div'); meta.className='meta';
       const left = document.createElement('div'); left.style.display='flex'; left.style.flexDirection='column';
-      const fname = document.createElement('div'); fname.className='fname'; fname.textContent = parseOriginalName(obj.name);
+      const fname = document.createElement('div'); fname.className='fname'; fname.title = parseOriginalName(obj.name); fname.textContent = parseOriginalName(obj.name);
       const fmeta = document.createElement('div'); fmeta.className='fmeta'; fmeta.textContent = `${parseUploaderFromName(obj.name)} • ${formatDate(obj.updated_at || obj.created_at)} • ${humanSize(obj.metadata && obj.metadata.size ? obj.metadata.size : '')}`;
       left.appendChild(fname); left.appendChild(fmeta);
       meta.appendChild(left);
@@ -337,7 +365,8 @@ async function renderGallery(){
       const right = document.createElement('div');
       const delBtn = document.createElement('button'); delBtn.className='delete'; delBtn.textContent='Delete';
       delBtn.onclick = async () => {
-        const pass = prompt('Enter admin password:');
+        // better confirm modal-like prompt
+        const pass = prompt('Enter admin password to delete this file:');
         if(pass === null) return;
         if(pass === ADMIN_PASSWORD){
           try{
@@ -373,7 +402,7 @@ async function renderUploaderList(){
   });
 }
 
-/* ---------- Init ---------- */
+/* ---------- Init & loader ---------- */
 setTimeout(()=>{ // show loader for 3s
   document.getElementById('loader').style.display='none';
   setTab('all');
@@ -384,134 +413,105 @@ renderGallery();
 
 /* Small parallax for bg */
 (function(){
-  const bg = document.getElementById('bgImg');
+  const bg = document.querySelector('.bg-grid');
   window.addEventListener('mousemove', e=> {
     const cw = window.innerWidth, ch = window.innerHeight;
     const tx = (e.clientX - cw/2) / (cw/2);
     const ty = (e.clientY - ch/2) / (ch/2);
-    const rx = tx * 12, ry = ty * 8;
-    bg.style.transform = `translate3d(${rx}px, ${ry}px, 0) scale(1.03)`;
+    const rx = tx * 8, ry = ty * 6;
+    bg.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
   });
 })();
 
-/* -------------------- WebAudio: cinematic ambient (royalty-free style synthesis) -------------------- */
-/* This synthesizes a looping ambient cinematic hum to avoid embedding copyrighted audio.
-   It auto-starts and loops. Browsers may block autoplay; if so, user can toggle using button. */
-let audioCtx, masterGain, isPlaying = false;
-function initAudio(){
-  if(audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  masterGain = audioCtx.createGain(); masterGain.gain.value = 0.16; masterGain.connect(audioCtx.destination);
-  // create two detuned saw oscillators for pad
-  const o1 = audioCtx.createOscillator(), o2 = audioCtx.createOscillator();
-  o1.type = 'sawtooth'; o2.type = 'sawtooth';
-  o1.frequency.value = 55; o2.frequency.value = 55 * 1.002;
-  const o1Gain = audioCtx.createGain(); o1Gain.gain.value = 0.4;
-  const o2Gain = audioCtx.createGain(); o2Gain.gain.value = 0.3;
-  // bandpass filter for cinematic tone
-  const bp = audioCtx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.value = 420; bp.Q.value = 0.8;
-  // subtle LFO on filter
-  const lfo = audioCtx.createOscillator(); lfo.type='sine'; lfo.frequency.value = 0.08;
-  const lfoGain = audioCtx.createGain(); lfoGain.gain.value = 200;
-  lfo.connect(lfoGain); lfoGain.connect(bp.frequency);
-  // reverb-like using delay + feedback
-  const delay = audioCtx.createDelay(); delay.delayTime.value = 0.6;
-  const fb = audioCtx.createGain(); fb.gain.value = 0.45;
-  delay.connect(fb); fb.connect(delay);
-  // connect chain
-  o1.connect(o1Gain); o2.connect(o2Gain);
-  o1Gain.connect(bp); o2Gain.connect(bp);
-  bp.connect(delay); delay.connect(masterGain); bp.connect(masterGain);
-  // soft noise layer (for texture)
-  const bufferSize = 2*audioCtx.sampleRate;
-  const noiseBuff = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-  const data = noiseBuff.getChannelData(0);
-  for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * 0.0025;
-  const noise = audioCtx.createBufferSource(); noise.buffer = noiseBuff; noise.loop = true;
-  const noiseGain = audioCtx.createGain(); noiseGain.gain.value = 0.25; noise.connect(noiseGain); noiseGain.connect(masterGain);
-  // lowpass swell envelope
-  function startAll(){
-    try{
-      o1.start(); o2.start(); lfo.start(); noise.start();
-      isPlaying = true;
-      document.getElementById('musicBtn').textContent = 'Mute';
-    }catch(e){ /* already started maybe */ }
-  }
-  startAll();
-}
-function toggleMusic(){
-  try{
-    if(!audioCtx) initAudio();
-    if(audioCtx.state === 'suspended') audioCtx.resume();
-  } catch(e){ console.error(e); }
-  if(!isPlaying){
-    initAudio();
+/* -------------------- Single audio player (only this track) -------------------- */
+const MUSIC_SRC = "https://files.catbox.moe/6rg98h.mp3";
+let audioEl = null;
+let isPlaying = false;
+
+function createAudio(){
+  if(audioEl) return;
+  audioEl = document.createElement('audio');
+  audioEl.src = MUSIC_SRC;
+  audioEl.loop = true;
+  audioEl.preload = 'auto';
+  audioEl.crossOrigin = "anonymous";
+  audioEl.volume = 0.25;
+  audioEl.addEventListener('play', ()=> {
     isPlaying = true;
-    document.getElementById('musicBtn').textContent = 'Mute';
-  } else {
-    if(masterGain) masterGain.gain.value = 0;
+    updateMusicBtn();
+  });
+  audioEl.addEventListener('pause', ()=> {
     isPlaying = false;
-    document.getElementById('musicBtn').textContent = 'Play';
+    updateMusicBtn();
+  });
+  // attach to DOM but hidden
+  audioEl.style.display = 'none';
+  document.body.appendChild(audioEl);
+}
+
+async function tryAutoplay() {
+  createAudio();
+  try{
+    await audioEl.play();
+    isPlaying = true;
+  } catch(err){
+    // autoplay blocked — show Play on button so user can start manually
+    isPlaying = false;
   }
-}
-/* try to start on load (may be blocked by browser) */
-window.addEventListener('load', async ()=>{
-  try{ initAudio(); } catch(e){ console.error('Audio start blocked', e); document.getElementById('musicBtn').textContent='Play'; }
-});
-
-/* Accessibility: allow Enter key to start audio on mobile if blocked */
-document.getElementById('musicBtn').addEventListener('click', async ()=>{
-  if(audioCtx && audioCtx.state === 'suspended') await audioCtx.resume();
-});
-
-/* --------------------------------------------------------------------------- */
-
-</script>
-  <!-- Jarvis Intro Music -->
-<script>
-let introAudio;
-let hasStarted = false;
-
-function playIntroMusic() {
-  if (hasStarted) return;
-  hasStarted = true;
-
-  introAudio = new Audio("https://files.catbox.moe/6rg98h.mp3");
-  introAudio.volume = 0.3; // adjust volume (0.0–1.0)
-  introAudio.play().catch(err => console.log('Playback blocked:', err));
-
-  // Stop after 30 seconds
-  setTimeout(() => {
-    introAudio.pause();
-    introAudio.currentTime = 0;
-  }, 30000);
+  updateMusicBtn();
 }
 
-// Auto start after your Jarvis loader animation
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    playIntroMusic();
-  }, 3000); // waits 3s for loader before playing
-});
-
-// Optional button for manual control
-function toggleMusic() {
-  if (!introAudio) return;
-  if (introAudio.paused) {
-    introAudio.play();
-    document.getElementById("musicBtn").textContent = "Mute";
+// toggle music on header button
+function toggleMusic(){
+  createAudio();
+  if(!audioEl) return;
+  if(audioEl.paused){
+    audioEl.play().catch(()=> {
+      // if still blocked, we cannot force it; keep state updated
+      isPlaying = false;
+      updateMusicBtn();
+    });
   } else {
-    introAudio.pause();
-    document.getElementById("musicBtn").textContent = "Play";
+    audioEl.pause();
   }
 }
+
+function updateMusicBtn(){
+  const btn = document.getElementById('musicBtn');
+  if(!btn) return;
+  if(audioEl && !audioEl.paused){
+    btn.textContent = 'Mute';
+  } else {
+    btn.textContent = 'Play';
+  }
+}
+
+// attempt autoplay on load
+window.addEventListener('load', ()=> {
+  // try to autoplay after loader (3s)
+  setTimeout(()=> {
+    tryAutoplay();
+  }, 3000);
+  // if audio was blocked, clicking anywhere should try to resume
+  document.addEventListener('click', userInteractionStart, { once: true, passive: true });
+});
+
+// as many browsers require a user gesture; resume on first user interaction
+function userInteractionStart(){
+  if(!audioEl) createAudio();
+  if(audioEl && audioEl.paused){
+    audioEl.play().catch(()=>{});
+  }
+  updateMusicBtn();
+}
+
+/* Accessibility: also allow Enter key on musicBtn to act */
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && document.activeElement && document.activeElement.id === 'musicBtn'){
+    toggleMusic();
+  }
+});
 </script>
 
-<!-- Example button (optional) -->
-<button id="musicBtn" onclick="toggleMusic()" 
-style="position:fixed;bottom:20px;right:20px;z-index:999;padding:10px 20px;border:none;
-border-radius:8px;background:#00ffff;color:black;font-weight:bold;">
-Mute
-</button>
 </body>
-  </html>
+          </html>
