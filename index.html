@@ -13,7 +13,7 @@
     --danger:#ff6363; --success:#10b981;
   }
   html,body{height:100%;margin:0;background:#000;color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,-apple-system}
-  /* CSS-only animated background (Option B) */
+  /* background */
   #bgwrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:linear-gradient(180deg,#000010 0%, #00061a 50%, #001428 100%);}
   .bg-grid{position:absolute;inset:0;opacity:0.08;background-image:
     radial-gradient(circle at 10% 10%, rgba(0,198,255,0.65) 0px, rgba(0,0,0,0) 60px),
@@ -24,54 +24,42 @@
     linear-gradient(90deg, rgba(0,255,255,0) 0%, rgba(0,255,255,0.12) 45%, rgba(255,255,255,0.9)50%, rgba(0,255,255,0.12)55%, rgba(0,255,255,0)100%);
     filter:blur(6px); animation:scan 16s linear infinite;opacity:0.07}
   @keyframes scan{0%{transform:translateY(-40vh)}50%{transform:translateY(120vh)}100%{transform:translateY(240vh)}}
-  .particles {
-    position:absolute;inset:-10%;z-index:0;pointer-events:none;opacity:0.12;
-    background:
-      radial-gradient(circle at 10% 10%, rgba(0,198,255,0.08) 0 2px, transparent 2px),
-      radial-gradient(circle at 30% 80%, rgba(107,0,255,0.06) 0 2px, transparent 2px),
-      radial-gradient(circle at 70% 30%, rgba(0,255,200,0.06) 0 2px, transparent 2px);
-    background-size: 40px 40px, 60px 60px, 50px 50px;
-    animation: drift 14s linear infinite;
-  }
-  @keyframes drift{ 0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)} }
-
+  .particles {position:absolute;inset:-10%;z-index:0;pointer-events:none;opacity:0.12;background:
+    radial-gradient(circle at 10% 10%, rgba(0,198,255,0.08) 0 2px, transparent 2px),
+    radial-gradient(circle at 30% 80%, rgba(107,0,255,0.06) 0 2px, transparent 2px),
+    radial-gradient(circle at 70% 30%, rgba(0,255,200,0.06) 0 2px, transparent 2px);
+    background-size: 40px 40px, 60px 60px, 50px 50px; animation: drift 14s linear infinite;}
+  @keyframes drift{0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)}}
   .glow{position:absolute;border-radius:50%;width:900px;height:900px;filter:blur(140px);opacity:0.12}
   .g1{left:-18%;top:-34%;background:radial-gradient(circle at 30% 30%, rgba(107,0,255,0.95) 0%, rgba(0,198,255,0.12) 18%, rgba(0,0,0,0) 60%);animation:float1 14s ease-in-out infinite}
   .g2{right:-26%;top:6%;background:radial-gradient(circle at 70% 60%, rgba(0,198,255,0.95) 0%, rgba(107,0,255,0.08) 18%, rgba(0,0,0,0) 60%);animation:float2 18s ease-in-out infinite}
   @keyframes float1{0%{transform:translateY(0)}50%{transform:translateY(18px)}100%{transform:translateY(0)}}
   @keyframes float2{0%{transform:translateY(0)}50%{transform:translateY(-22px)}100%{transform:translateY(0)}}
 
-  /* App container */
   .app{position:relative;z-index:3;max-width:1180px;margin:28px auto;padding:12px}
   header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(6px);box-shadow:0 8px 40px rgba(2,6,23,0.6)}
   .brand{display:flex;gap:12px;align-items:center}
   .logo{width:52px;height:52px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#001018;background:linear-gradient(135deg,var(--jarvis3),var(--jarvis2));box-shadow:0 6px 18px rgba(0,198,255,0.12)}
   h1{margin:0;font-size:18px}
   .sub{font-size:12px;color:var(--muted)}
-  /* tabs */
   .tabs{display:flex;gap:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.01));padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
   .tab{padding:8px 12px;border-radius:10px;background:transparent;border:1px solid rgba(255,255,255,0.02);cursor:pointer;font-weight:700;color:var(--text);transition:all .12s}
   .tab.active{background:linear-gradient(90deg, rgba(0,198,255,0.12), rgba(107,0,255,0.12));box-shadow:0 6px 20px rgba(0,198,255,0.06);border-color:rgba(0,198,255,0.35)}
-  /* upload panel */
   .panel{margin-top:16px;background:var(--card);padding:16px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
   .file-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .choose{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg, rgba(0,198,255,0.12), rgba(107,0,255,0.12));border:1px solid rgba(0,198,255,0.16);cursor:pointer;font-weight:800;color:#001018}
-  .choose .ic{width:28px;height:28px;border-radius:8px;background:linear-gradient(90deg,var(--jarvis),var(--jarvis3));display:grid;place-items:center;font-weight:900}
   input[type=file]{display:none}
   .btn{padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,var(--jarvis3),var(--jarvis2));color:#001018;border:none;cursor:pointer;font-weight:900;box-shadow:0 8px 30px rgba(0,198,255,0.12)}
-  .btn:active{transform:translateY(1px)}
   .uploader-name{padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
   .status{color:var(--muted);font-weight:700}
-  /* progress */
   #progressList{margin-top:12px;display:flex;flex-direction:column;gap:8px}
   .progress-row{padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.16));border:1px solid rgba(255,255,255,0.02)}
   .p-title{font-weight:800}
   .pbar{height:8px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:6px}
   .pfill{height:100%;width:0%;background:linear-gradient(90deg,var(--jarvis),var(--jarvis2));transition:width .08s linear}
-  /* gallery */
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
   .card{border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.16));overflow:hidden;border:1px solid rgba(0,198,255,0.06);box-shadow:0 10px 40px rgba(2,6,23,0.6);position:relative;transition:transform .12s}
-  .card:hover{transform:translateY(-6px);box-shadow:0 20px 60px rgba(0,198,255,0.12)}
+  .card:hover{transform:translateY(-6px)}
   .media{height:180px;background:rgba(0,0,0,0.08);display:block}
   .media img,.media video{width:100%;height:100%;object-fit:cover;display:block}
   .meta{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;color:var(--muted);font-size:13px}
@@ -79,25 +67,20 @@
   .fmeta{font-size:12px;opacity:0.8}
   .neon{position:absolute;inset:6px;border-radius:10px;pointer-events:none;border:1px solid rgba(0,198,255,0.06);box-shadow:inset 0 0 10px rgba(0,198,255,0.03)}
   .delete{padding:6px 10px;border-radius:8px;border:0;background:linear-gradient(90deg,#ff6363,#ff8a4d);color:white;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(255,99,99,0.12)}
-  /* uploaded names list */
   .u-list{display:flex;flex-direction:column;gap:8px;padding:8px}
   .u-item{padding:8px 10px;border-radius:8px;background:linear-gradient(90deg, rgba(0,198,255,0.08), rgba(107,0,255,0.06));cursor:pointer;font-weight:800;color:#001018;border:1px solid rgba(0,198,255,0.16)}
-  .u-item:hover{transform:translateY(-3px)}
-  /* loader */
   #loader{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.8));z-index:9}
   .ring{width:96px;height:96px;border-radius:50%;border:6px solid rgba(0,0,0,0.18);position:relative;display:grid;place-items:center}
   .ring:before{content:"";position:absolute;inset:-6px;border-radius:50%;border:6px solid transparent;border-top-color:var(--jarvis);animation:spin 1.8s linear infinite}
   .ring:after{content:"";position:absolute;inset:-16px;border-radius:50%;border:4px solid transparent;border-bottom-color:var(--jarvis3);filter:blur(6px);animation:spin 3s linear infinite}
   .loader-text{margin-top:12px;color:var(--muted);font-weight:800}
   @keyframes spin{to{transform:rotate(360deg)}}
-  /* music control */
   .music-toggle{padding:8px 10px;border-radius:8px;background:linear-gradient(90deg,var(--jarvis2),var(--jarvis));color:#001018;font-weight:800;border:0;cursor:pointer}
-  /* responsiveness */
   @media(max-width:720px){ .media{height:140px} .brand h1{font-size:16px} .logo{width:44px;height:44px} }
 </style>
 </head>
 <body>
-  <!-- BACKGROUND (CSS-only) -->
+  <!-- BACKGROUND -->
   <div id="bgwrap" aria-hidden="true">
     <div class="bg-grid"></div>
     <div class="particles"></div>
@@ -106,7 +89,7 @@
     <div class="scanline"></div>
   </div>
 
-  <!-- Loader (3s) -->
+  <!-- Loader (shows until gallery initialized) -->
   <div id="loader" role="status" aria-live="polite">
     <div style="text-align:center">
       <div class="ring"></div>
@@ -132,7 +115,6 @@
           <button class="tab" data-tab="videos" onclick="setTab('videos')">Videos</button>
           <button class="tab" data-tab="uploaders" onclick="setTab('uploaders')">Uploaded Names</button>
         </div>
-        <!-- SINGLE upper-right music button -->
         <button class="music-toggle" id="musicBtn" title="Toggle music" onclick="toggleMusic()">Loading…</button>
       </div>
     </header>
@@ -170,7 +152,7 @@
   </div>
 
 <script>
-/* ------------------ CONFIG ------------------ */
+/* ------------------ CONFIG (same as you provided) ------------------ */
 const SUPABASE_URL = "https://cksuswghafnksktbkbvg.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrc3Vzd2doYWZua3NrdGJrYnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE3MzU4NjAsImV4cCI6MjA3NzMxMTg2MH0.xvlF24-bse44uqnc35ew4KMqw_qIZYcIedT6zIhQXCM";
 const BUCKET = "photos";
@@ -365,7 +347,7 @@ async function renderGallery(){
       const right = document.createElement('div');
       const delBtn = document.createElement('button'); delBtn.className='delete'; delBtn.textContent='Delete';
       delBtn.onclick = async () => {
-        // better confirm modal-like prompt
+        // confirm modal-like prompt
         const pass = prompt('Enter admin password to delete this file:');
         if(pass === null) return;
         if(pass === ADMIN_PASSWORD){
@@ -403,13 +385,18 @@ async function renderUploaderList(){
 }
 
 /* ---------- Init & loader ---------- */
-setTimeout(()=>{ // show loader for 3s
-  document.getElementById('loader').style.display='none';
-  setTab('all');
-}, 3000);
+setTab('all'); // initial tab
 
-/* render initial quietly */
-renderGallery();
+// showing loader for exactly 3s while trying autoplay during loader
+function hideLoaderAndRender(){
+  document.getElementById('loader').style.display='none';
+  renderGallery();
+}
+
+// call later after attempts to autoplay
+setTimeout(()=> {
+  hideLoaderAndRender();
+}, 3000);
 
 /* Small parallax for bg */
 (function(){
@@ -423,12 +410,15 @@ renderGallery();
   });
 })();
 
-/* -------------------- Single audio player (only this track) -------------------- */
+/* -------------------- Audio & autoplay (attempt during loader) -------------------- */
 const MUSIC_SRC = "https://files.catbox.moe/6rg98h.mp3";
 let audioEl = null;
 let isPlaying = false;
+let audioContext = null;
+let audioSource = null;
 
-function createAudio(){
+// create simple audio element (fallback & visible control via button)
+function createAudioElement(){
   if(audioEl) return;
   audioEl = document.createElement('audio');
   audioEl.src = MUSIC_SRC;
@@ -436,81 +426,135 @@ function createAudio(){
   audioEl.preload = 'auto';
   audioEl.crossOrigin = "anonymous";
   audioEl.volume = 0.25;
-  audioEl.addEventListener('play', ()=> {
-    isPlaying = true;
-    updateMusicBtn();
-  });
-  audioEl.addEventListener('pause', ()=> {
-    isPlaying = false;
-    updateMusicBtn();
-  });
-  // attach to DOM but hidden
   audioEl.style.display = 'none';
+  audioEl.addEventListener('play', ()=> { isPlaying = true; updateMusicBtn(); });
+  audioEl.addEventListener('pause', ()=> { isPlaying = false; updateMusicBtn(); });
   document.body.appendChild(audioEl);
 }
 
-async function tryAutoplay() {
-  createAudio();
+// try classic audio.play()
+async function tryPlayAudioElement(){
+  createAudioElement();
   try{
     await audioEl.play();
     isPlaying = true;
-  } catch(err){
-    // autoplay blocked — show Play on button so user can start manually
+    updateMusicBtn();
+    return true;
+  }catch(e){
+    // blocked
     isPlaying = false;
+    updateMusicBtn();
+    return false;
   }
-  updateMusicBtn();
 }
 
-// toggle music on header button
+// attempt to prime/resume WebAudio context which sometimes helps autoplay on some Chrome builds
+async function tryAudioContextResume(){
+  if(typeof AudioContext === 'undefined' && typeof webkitAudioContext === 'undefined') return false;
+  try{
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    // quick fetch+decode to prime the audio (may be blocked in some browsers)
+    const response = await fetch(MUSIC_SRC, {mode:'cors'});
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = await audioContext.decodeAudioData(arrayBuffer.slice(0));
+    // create source & connect to destination with gain
+    audioSource = audioContext.createBufferSource();
+    const gain = audioContext.createGain();
+    gain.gain.value = 0.25;
+    audioSource.buffer = buffer;
+    audioSource.loop = true;
+    audioSource.connect(gain);
+    gain.connect(audioContext.destination);
+    audioSource.start(0);
+    isPlaying = true;
+    updateMusicBtn();
+    return true;
+  }catch(err){
+    // cleanup if failed
+    try{ if(audioSource) audioSource.disconnect(); }catch(e){}
+    try{ if(audioContext) audioContext.close(); }catch(e){}
+    audioSource = null; audioContext = null;
+    return false;
+  }
+}
+
+// unified attempt: first AudioContext approach (if allowed), then normal audio element
+async function attemptAutoplayDuringLoader(){
+  // First attempt: try resume AudioContext (some browsers allow)
+  const ctxOk = await tryAudioContextResume();
+  if(ctxOk) return;
+  // second attempt: try playing normal audio element
+  await tryPlayAudioElement();
+}
+
+// toggle music (user control)
 function toggleMusic(){
-  createAudio();
-  if(!audioEl) return;
-  if(audioEl.paused){
-    audioEl.play().catch(()=> {
-      // if still blocked, we cannot force it; keep state updated
+  createAudioElement();
+  if(audioContext && audioSource){
+    // if playing via AudioContext: stop it and clear; or start if stopped
+    if(isPlaying){
+      try{ audioSource.stop(); }catch(e){}
+      audioSource = null;
+      try{ audioContext.close(); }catch(e){}
+      audioContext = null;
       isPlaying = false;
-      updateMusicBtn();
-    });
+    } else {
+      // attempt to restart via AudioContext decode (may be blocked)
+      tryAudioContextResume();
+    }
+    updateMusicBtn();
+    return;
+  }
+
+  if(audioEl){
+    if(audioEl.paused) audioEl.play().catch(()=>{});
+    else audioEl.pause();
   } else {
-    audioEl.pause();
+    createAudioElement();
+    audioEl.play().catch(()=>{});
   }
 }
 
 function updateMusicBtn(){
   const btn = document.getElementById('musicBtn');
   if(!btn) return;
-  if(audioEl && !audioEl.paused){
-    btn.textContent = 'Mute';
-  } else {
-    btn.textContent = 'Play';
-  }
+  if(isPlaying) btn.textContent = 'Mute';
+  else btn.textContent = 'Play';
 }
 
-// attempt autoplay on load
-window.addEventListener('load', ()=> {
-  // try to autoplay after loader (3s)
-  setTimeout(()=> {
-    tryAutoplay();
-  }, 3000);
-  // if audio was blocked, clicking anywhere should try to resume
-  document.addEventListener('click', userInteractionStart, { once: true, passive: true });
+// try autoplay right away (during loader) — best-effort
+window.addEventListener('load', ()=>{
+  // Start autoplay attempts immediately while loader is visible
+  attemptAutoplayDuringLoader().then(()=> {
+    updateMusicBtn();
+  }).catch(()=> { updateMusicBtn(); });
+
+  // If autoplay is blocked, play on first user interaction
+  document.addEventListener('click', userStartAudio, { once:true, passive:true });
+  document.addEventListener('keydown', userStartAudio, { once:true, passive:true });
 });
 
-// as many browsers require a user gesture; resume on first user interaction
-function userInteractionStart(){
-  if(!audioEl) createAudio();
-  if(audioEl && audioEl.paused){
-    audioEl.play().catch(()=>{});
+// user gesture handler to ensure audio plays if blocked
+function userStartAudio(){
+  // if AudioContext exists but suspended, resume it
+  if(audioContext && audioContext.state === 'suspended'){
+    audioContext.resume().then(()=> { isPlaying = true; updateMusicBtn(); }).catch(()=>{});
+    return;
   }
-  updateMusicBtn();
+  // else ensure audio element plays
+  createAudioElement();
+  if(audioEl.paused){
+    audioEl.play().then(()=>{ isPlaying = true; updateMusicBtn(); }).catch(()=>{});
+  }
 }
 
-/* Accessibility: also allow Enter key on musicBtn to act */
+/* Accessibility: allow Enter key on musicBtn to act */
 document.addEventListener('keydown', (e)=>{
   if(e.key === 'Enter' && document.activeElement && document.activeElement.id === 'musicBtn'){
     toggleMusic();
   }
 });
+
 </script>
 
 </body>
