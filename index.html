@@ -467,5 +467,51 @@ document.getElementById('musicBtn').addEventListener('click', async ()=>{
 /* --------------------------------------------------------------------------- */
 
 </script>
+  <!-- Jarvis Intro Music -->
+<script>
+let introAudio;
+let hasStarted = false;
+
+function playIntroMusic() {
+  if (hasStarted) return;
+  hasStarted = true;
+
+  introAudio = new Audio("https://files.catbox.moe/6rg98h.mp3");
+  introAudio.volume = 0.3; // adjust volume (0.0–1.0)
+  introAudio.play().catch(err => console.log('Playback blocked:', err));
+
+  // Stop after 30 seconds
+  setTimeout(() => {
+    introAudio.pause();
+    introAudio.currentTime = 0;
+  }, 30000);
+}
+
+// Auto start after your Jarvis loader animation
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    playIntroMusic();
+  }, 3000); // waits 3s for loader before playing
+});
+
+// Optional button for manual control
+function toggleMusic() {
+  if (!introAudio) return;
+  if (introAudio.paused) {
+    introAudio.play();
+    document.getElementById("musicBtn").textContent = "Mute";
+  } else {
+    introAudio.pause();
+    document.getElementById("musicBtn").textContent = "Play";
+  }
+}
+</script>
+
+<!-- Example button (optional) -->
+<button id="musicBtn" onclick="toggleMusic()" 
+style="position:fixed;bottom:20px;right:20px;z-index:999;padding:10px 20px;border:none;
+border-radius:8px;background:#00ffff;color:black;font-weight:bold;">
+Mute
+</button>
 </body>
   </html>
